@@ -1,97 +1,79 @@
-'use client';
-
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Briefcase, ChevronDown, ChevronUp } from 'lucide-react';
-import ReadinessMeter from './ReadinessMeter';
-import SkillGapChart from './SkillGapChart';
+import React from 'react';
+import { Card } from '@/components/ui/Card';
+import { Button } from '@/components/ui/Button';
+import { MapPin, Briefcase, Bookmark } from 'lucide-react';
 
 interface JobCardProps {
-    role: string;
-    score: number;
-    matchedSkills: string[];
-    missingSkills: string[];
-    courses: Array<{ title: string; platform: string; link: string; difficulty: string }>;
+    title: string;
+    company?: string;
+    location?: string;
+    type?: string;
+    matchScore: number;
+    skills?: string[];
+    missingSkills?: string[];
 }
 
-export default function JobCard({ role, score, matchedSkills, missingSkills, courses }: JobCardProps) {
-    const [expanded, setExpanded] = useState(false);
-
+export const JobCard: React.FC<JobCardProps> = ({
+    title,
+    company,
+    location,
+    type,
+    matchScore,
+    skills = [],
+    missingSkills = [],
+}) => {
     return (
-        <motion.div
-            layout
-            className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mb-4"
-        >
-            <div
-                className="p-4 flex items-center justify-between cursor-pointer"
-                onClick={() => setExpanded(!expanded)}
-            >
-                <div className="flex items-center gap-4">
-                    <div className="p-3 bg-blue-50 rounded-lg">
-                        <Briefcase className="w-6 h-6 text-blue-600" />
-                    </div>
-                    <div>
-                        <h3 className="text-lg font-semibold text-gray-900">{role}</h3>
-                        <p className="text-sm text-gray-500">
-                            {matchedSkills.length} matches • {missingSkills.length} missing
-                        </p>
-                    </div>
-                </div>
+        <Card className="p-6 flex flex-col gap-4 hover:-translate-y-1 transition-all duration-200 hover:shadow-card-hover group relative">
+            <div className="absolute top-6 right-6 text-text-placeholder hover:text-primary cursor-pointer transition-colors">
+                <Bookmark size={20} />
+            </div>
 
-                <div className="flex items-center gap-4">
-                    <div className="text-right">
-                        <span className={`text-lg font-bold ${score >= 70 ? 'text-green-600' : 'text-yellow-600'}`}>
-                            {score}%
-                        </span>
-                    </div>
-                    {expanded ? <ChevronUp className="w-5 h-5 text-gray-400" /> : <ChevronDown className="w-5 h-5 text-gray-400" />}
+            <div className="flex items-start gap-3">
+                <div className="w-12 h-12 rounded-xl bg-gray-50 border border-border flex items-center justify-center text-xl font-bold text-gray-400 shrink-0">
+                    {title.charAt(0)}
+                </div>
+                <div>
+                    <h3 className="text-lg font-bold text-text-primary group-hover:text-primary transition-colors line-clamp-1 pr-4">{title}</h3>
+                    {company && <p className="text-sm text-text-secondary">{company}</p>}
                 </div>
             </div>
 
-            <AnimatePresence>
-                {expanded && (
-                    <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: 'auto', opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        className="border-t border-gray-50 bg-gray-50/50"
-                    >
-                        <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-8">
-                            {/* Visuals */}
-                            <div className="flex flex-col items-center">
-                                <h4 className="text-sm font-semibold text-gray-700 mb-4">Readiness Analysis</h4>
-                                <div className="flex gap-8 items-center">
-                                    <ReadinessMeter score={score} />
-                                </div>
-                            </div>
-
-                            <div className="flex flex-col items-center">
-                                <h4 className="text-sm font-semibold text-gray-700 mb-2">Skill Gap Radar</h4>
-                                <SkillGapChart matchedSkills={matchedSkills} missingSkills={missingSkills} />
-                            </div>
-
-                            {/* Recommendations */}
-                            <div className="md:col-span-2">
-                                <h4 className="text-sm font-semibold text-gray-700 mb-3">Recommended Courses</h4>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                                    {courses.length > 0 ? courses.map((course, i) => (
-                                        <a
-                                            key={i}
-                                            href={course.link}
-                                            target="_blank"
-                                            className="block p-3 bg-white rounded-lg border hover:border-blue-400 transition shadow-sm"
-                                        >
-                                            <div className="text-xs font-bold text-blue-600 mb-1">{course.platform}</div>
-                                            <div className="text-sm font-medium text-gray-900 line-clamp-1">{course.title}</div>
-                                            <div className="text-xs text-gray-500 mt-1 capitalize">{course.difficulty}</div>
-                                        </a>
-                                    )) : <p className="text-sm text-gray-500 italic">No specific recommendations found.</p>}
-                                </div>
-                            </div>
-                        </div>
-                    </motion.div>
+            <div className="flex flex-wrap gap-2 mt-1">
+                {location && (
+                    <div className="flex items-center gap-1 text-xs font-medium text-text-secondary bg-gray-100 px-2 py-1 rounded-md">
+                        <MapPin size={12} /> {location}
+                    </div>
                 )}
-            </AnimatePresence>
-        </motion.div>
+                {type && (
+                    <div className="flex items-center gap-1 text-xs font-medium text-text-secondary bg-gray-100 px-2 py-1 rounded-md">
+                        <Briefcase size={12} /> {type}
+                    </div>
+                )}
+            </div>
+
+            {/* Skills tags */}
+            {skills.length > 0 && (
+                <div className="flex flex-wrap gap-1.5">
+                    {skills.slice(0, 5).map((skill, i) => (
+                        <span key={i} className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-green-50 text-green-700 border border-green-200">
+                            {skill}
+                        </span>
+                    ))}
+                    {missingSkills.slice(0, 3).map((skill, i) => (
+                        <span key={`m-${i}`} className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-red-50 text-red-600 border border-red-200">
+                            {skill}
+                        </span>
+                    ))}
+                </div>
+            )}
+
+            <div className="mt-auto pt-4 flex items-center justify-between border-t border-border/50">
+                <div className="flex flex-col">
+                    <span className="text-[10px] uppercase font-bold text-text-secondary/80 tracking-wider">Match</span>
+                    <span className="text-lg font-bold text-success">{matchScore}%</span>
+                </div>
+                <Button size="sm" className="px-6 rounded-lg">View Details</Button>
+            </div>
+        </Card>
     );
-}
+};

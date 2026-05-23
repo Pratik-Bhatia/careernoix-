@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import axios from 'axios';
+import type { DashboardData } from '@/lib/api';
 
 interface User {
     id: number;
@@ -7,20 +7,21 @@ interface User {
     full_name?: string;
 }
 
-interface MatchResult {
-    job_role: string;
-    score: number;
-}
-
 interface AppState {
     user: User | null;
     token: string | null;
     isLoading: boolean;
 
+    // Dashboard state
+    resumeUploaded: boolean;
+    dashboardData: DashboardData | null;
+
     // Actions
     setAuth: (token: string, user: User) => void;
     logout: () => void;
     setLoading: (loading: boolean) => void;
+    setResumeUploaded: (val: boolean) => void;
+    setDashboardData: (data: DashboardData | null) => void;
 
     // Async
     checkAuth: () => Promise<void>;
@@ -30,6 +31,8 @@ export const useStore = create<AppState>((set) => ({
     user: null,
     token: typeof window !== 'undefined' ? localStorage.getItem('token') : null,
     isLoading: false,
+    resumeUploaded: false,
+    dashboardData: null,
 
     setAuth: (token, user) => {
         localStorage.setItem('token', token);
@@ -38,14 +41,16 @@ export const useStore = create<AppState>((set) => ({
 
     logout: () => {
         localStorage.removeItem('token');
-        set({ token: null, user: null });
+        set({ token: null, user: null, dashboardData: null, resumeUploaded: false });
     },
 
     setLoading: (loading) => set({ isLoading: loading }),
 
+    setResumeUploaded: (val) => set({ resumeUploaded: val }),
+
+    setDashboardData: (data) => set({ dashboardData: data }),
+
     checkAuth: async () => {
-        // A placeholder for verifying token validity if backend supports it
-        // For now, if token exists, we simulate persistence
         const token = localStorage.getItem('token');
         if (token) {
             set({ token });

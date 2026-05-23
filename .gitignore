@@ -28,3 +28,16 @@ Thumbs.db
 # IDEs
 .vscode/
 .idea/
+
+# Database & local data
+pgdata/
+*.db
+*.sqlite
+*.sqlite3
+
+# Generated/binary files
+*.pdf
+*.zip
+
+# TypeScript build info
+*.tsbuildinfo

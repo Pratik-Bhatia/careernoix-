@@ -1,5 +1,6 @@
 from typing import Any
 from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 from fastapi.security import OAuth2PasswordRequestForm
 from app.db.base_class import Base
@@ -16,14 +17,15 @@ def register(
     user_in: UserCreate,
     db: Session = Depends(deps.get_db),
 ) -> Any:
-    user = db.query(User).filter(User.email == user_in.email).first()
+    email = user_in.email.strip().lower()
+    user = db.query(User).filter(func.lower(User.email) == email).first()
     if user:
         raise HTTPException(
             status_code=400,
             detail="The user with this username already exists in the system.",
         )
     user = User(
-        email=user_in.email,
+        email=email,
         full_name=user_in.full_name,
         hashed_password=security.get_password_hash(user_in.password),
         is_active=True,
@@ -38,7 +40,8 @@ def login(
     form_data: OAuth2PasswordRequestForm = Depends(),
     db: Session = Depends(deps.get_db),
 ) -> Any:
-    user = db.query(User).filter(User.email == form_data.username).first()
+    email = form_data.username.strip().lower()
+    user = db.query(User).filter(func.lower(User.email) == email).first()
     if not user or not security.verify_password(form_data.password, user.hashed_password):
         raise HTTPException(status_code=400, detail="Incorrect email or password")
     

@@ -1,0 +1,48 @@
+
+
+services:
+  backend:
+    build:
+      context: ./backend
+    container_name: smart-job-matching-backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app  # Mount local code for hot reloading
+    env_file:
+      - ./backend/.env
+    depends_on:
+      - db
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: smart-job-matching-frontend
+    command: npm run dev -- -H 0.0.0.0
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app      # Mount local code
+      - /app/node_modules  # Prevent local node_modules from overwriting container's
+      - /app/.next         # Prevent .next cache conflicts
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8000
+      - WATCHPACK_POLLING=true  # Reliable file watching on Docker volume mounts (Windows/macOS)
+    depends_on:
+      - backend
+
+  db:
+    image: postgres:15-alpine
+    container_name: smart-job-matching-db
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=smart_job_db
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
+

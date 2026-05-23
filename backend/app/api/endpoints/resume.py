@@ -2,8 +2,9 @@ from typing import Any, List
 from fastapi import APIRouter, Depends, UploadFile, File, HTTPException
 from sqlalchemy.orm import Session
 from app.api import deps
-from app.models.all_models import Resume, User
+from app.models.all_models import Resume, User, JobRole, MatchResult
 from app.services.resume_parser import extract_text_from_pdf, parse_resume
+from app.services.matching import calculate_match
 from app.core import security
 from fastapi.security import OAuth2PasswordBearer
 from app.core.config import settings
@@ -51,27 +52,65 @@ async def upload_resume(
     parsed_data = parse_resume(raw_text)
     stages.append("parsed_json")
 
-    # 4. Save to DB
-    # Check if resume exists
+    # 4. Save Resume to DB
+    resume_skills = parsed_data.get("skills", [])
     existing_resume = db.query(Resume).filter(Resume.user_id == current_user_id).first()
     if existing_resume:
         existing_resume.content = raw_text
-        existing_resume.parsed_skills = parsed_data.get("skills", [])
-        # In a real app we might update other fields too
+        existing_resume.parsed_skills = resume_skills
         db.add(existing_resume)
     else:
         new_resume = Resume(
             user_id=current_user_id,
             content=raw_text,
-            parsed_skills=parsed_data.get("skills", [])
+            parsed_skills=resume_skills
         )
         db.add(new_resume)
     
     db.commit()
     stages.append("parsed_json_saved")
 
+    # 5. Auto-generate matches against ALL job roles
+    job_roles = db.query(JobRole).all()
+    match_summaries = []
+
+    for job_role in job_roles:
+        job_skills = job_role.required_skills if job_role.required_skills else []
+        result = calculate_match(resume_skills, job_skills)
+
+        # Upsert match result
+        match_entry = db.query(MatchResult).filter(
+            MatchResult.user_id == current_user_id,
+            MatchResult.job_role_id == job_role.id
+        ).first()
+
+        if match_entry:
+            match_entry.score = result["score"]
+            match_entry.details = result
+        else:
+            match_entry = MatchResult(
+                user_id=current_user_id,
+                job_role_id=job_role.id,
+                score=result["score"],
+                details=result
+            )
+            db.add(match_entry)
+
+        match_summaries.append({
+            "job_role_id": job_role.id,
+            "job_title": job_role.title,
+            "score": result["score"],
+            "matched_skills": result["matched_skills"],
+            "missing_skills": result["missing_skills"],
+        })
+
+    db.commit()
+    stages.append("matches_generated")
+
     return {
         "filename": file.filename,
         "parsed_data": parsed_data,
+        "matches": match_summaries,
+        "total_matches": len(match_summaries),
         "progress": stages
     }
