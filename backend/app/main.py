@@ -19,6 +19,7 @@ app.add_middleware(
         "http://127.0.0.1:3000",
         "https://smart-job-frontend.onrender.com",
         "https://smart-job-matching.onrender.com",
+        "https://careernoix-u1is.vercel.app",
     ],
     allow_origin_regex=r"^http://(localhost|127\.0\.0\.1):\d+$",
     allow_credentials=True,
