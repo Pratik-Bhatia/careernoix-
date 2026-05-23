@@ -9,7 +9,10 @@ Base.metadata.create_all(bind=engine)
 
 from fastapi.middleware.cors import CORSMiddleware
 
-app = FastAPI(title=settings.PROJECT_NAME)
+app = FastAPI(
+    title=settings.PROJECT_NAME,
+    root_path="/_/backend",  # Vercel routePrefix — keeps docs/redirects correct
+)
 
 # Set all CORS enabled origins
 app.add_middleware(
