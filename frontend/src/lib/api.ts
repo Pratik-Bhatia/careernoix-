@@ -112,3 +112,33 @@ export function decodeJwtPayload(token: string): Record<string, any> | null {
         return null;
     }
 }
+
+// ─── Resume Builder Sync ─────────────────────────────────
+
+/**
+ * Fetch the logged-in user's resume builder data from the backend.
+ * Returns null if unauthenticated or no data saved yet.
+ */
+export async function fetchResumeBuilderData(): Promise<Record<string, any> | null> {
+    try {
+        const response = await apiClient.get<Record<string, any>>('/resume-builder/');
+        // Backend returns {} when no record exists yet — treat as null
+        if (!response.data || Object.keys(response.data).length === 0) return null;
+        return response.data;
+    } catch {
+        return null;
+    }
+}
+
+/**
+ * Persist the full resume builder data for the logged-in user.
+ * Fire-and-forget safe — errors are caught and returned as false.
+ */
+export async function saveResumeBuilderData(data: Record<string, any>): Promise<boolean> {
+    try {
+        await apiClient.put('/resume-builder/', { data });
+        return true;
+    } catch {
+        return false;
+    }
+}

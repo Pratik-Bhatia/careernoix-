@@ -11,9 +11,10 @@ class User(Base):
     hashed_password = Column(String, nullable=False)
     is_active = Column(Boolean, default=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
-    
+
     resume = relationship("Resume", back_populates="user", uselist=False)
     matches = relationship("MatchResult", back_populates="user")
+    resume_builder_data = relationship("ResumeBuilderData", back_populates="user", uselist=False)
 
 class JobRole(Base):
     __tablename__ = "job_roles"
@@ -54,3 +55,18 @@ class MatchResult(Base):
     
     user = relationship("User", back_populates="matches")
     job_role = relationship("JobRole")
+
+class ResumeBuilderData(Base):
+    """Stores the structured resume builder form data per user account."""
+    __tablename__ = "resume_builder_data"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), unique=True, nullable=False, index=True)
+    data = Column(JSON, nullable=False, default=dict)  # Full ResumeData JSON blob
+    updated_at = Column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        onupdate=func.now(),
+    )
+
+    user = relationship("User", back_populates="resume_builder_data")

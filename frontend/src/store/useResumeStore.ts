@@ -73,23 +73,30 @@ export interface ResumeData {
     languages: LanguageEntry[];
 }
 
+export type SyncStatus = 'idle' | 'saving' | 'saved' | 'error';
+
 interface ResumeStore {
     resumeData: ResumeData;
-    
+    syncStatus: SyncStatus;
+
     // Actions
     updatePersonalInfo: (info: Partial<PersonalInfo>) => void;
     updateSummary: (summary: string) => void;
-    
+
     // Lists Actions (Experience, Education, Projects, Certifications, Languages)
     setExperience: (entries: ExperienceEntry[]) => void;
     setEducation: (entries: EducationEntry[]) => void;
     setProjects: (entries: ProjectEntry[]) => void;
     setCertifications: (entries: CertificationEntry[]) => void;
     setLanguages: (entries: LanguageEntry[]) => void;
-    
+
     // Simple Array lists (Skills, Achievements)
     setSkills: (skills: string[]) => void;
     setAchievements: (achievements: string[]) => void;
+
+    // Sync actions
+    hydrateFromBackend: (data: ResumeData) => void;
+    setSyncStatus: (status: SyncStatus) => void;
 
     // Helpers
     getSectionCompletion: (section: keyof ResumeData) => number;
@@ -216,6 +223,7 @@ export const useResumeStore = create<ResumeStore>()(
                     return legacyExperience || initialExperience;
                 })()
             },
+            syncStatus: 'idle' as SyncStatus,
 
             updatePersonalInfo: (info) => set((state) => ({
                 resumeData: {
@@ -255,6 +263,10 @@ export const useResumeStore = create<ResumeStore>()(
             setAchievements: (achievements) => set((state) => ({
                 resumeData: { ...state.resumeData, achievements }
             })),
+
+            hydrateFromBackend: (data: ResumeData) => set({ resumeData: data }),
+
+            setSyncStatus: (status: SyncStatus) => set({ syncStatus: status }),
 
             getSectionCompletion: (section) => {
                 const data = get().resumeData[section];
