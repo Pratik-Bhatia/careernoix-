@@ -14,7 +14,8 @@ import {
     FileText,
     Folder,
     ChevronDown,
-    ChevronUp
+    ChevronUp,
+    Sparkles
 } from 'lucide-react';
 import { useStore } from '@/store/useStore';
 import { cn } from '@/lib/utils';
@@ -31,6 +32,7 @@ export default function DashboardLayout({
     const { logout, user } = useStore();
 
     const [isResumeBuilderExpanded, setResumeBuilderExpanded] = useState(pathname.startsWith('/resume-builder'));
+    const [isAnalyzeExpanded, setAnalyzeExpanded] = useState(pathname.startsWith('/analyze-improve'));
 
     const handleLogout = () => {
         logout();
@@ -52,6 +54,12 @@ export default function DashboardLayout({
         { name: 'Certifications', href: '/resume-builder/certifications' },
         { name: 'Achievements', href: '/resume-builder/achievements' },
         { name: 'Languages', href: '/resume-builder/languages' },
+    ];
+
+    const analyzeImproveChildren = [
+        { name: 'Resume Score', href: '/analyze-improve/resume-score' },
+        { name: 'AI Suggestions', href: '/analyze-improve/ai-suggestions' },
+        { name: 'AI Resume Optimizer', href: '/analyze-improve/ai-resume-optimizer' },
     ];
 
     const bottomNavItems = [
@@ -139,6 +147,49 @@ export default function DashboardLayout({
                         {isResumeBuilderExpanded && (
                             <div className="mt-1 ml-4 pl-3 border-l border-border/80 space-y-1">
                                 {resumeBuilderChildren.map((child) => {
+                                    const isChildActive = pathname === child.href;
+                                    return (
+                                        <Link
+                                            key={child.href}
+                                            href={child.href}
+                                            onClick={() => setSidebarOpen(false)}
+                                            className={cn(
+                                                "flex items-center px-4 py-2 text-sm rounded-lg transition-colors",
+                                                isChildActive
+                                                    ? 'text-primary font-semibold bg-primary/5'
+                                                    : 'text-text-secondary hover:text-text-primary hover:bg-gray-50'
+                                            )}
+                                        >
+                                            {child.name}
+                                        </Link>
+                                    );
+                                })}
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Analyze & Improve Collapsible Group */}
+                    <div>
+                        <button
+                            onClick={() => setAnalyzeExpanded(!isAnalyzeExpanded)}
+                            className={cn(
+                                "w-full flex items-center justify-between px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 group relative overflow-hidden cursor-pointer",
+                                pathname.startsWith('/analyze-improve')
+                                    ? 'bg-primary/10 text-primary font-semibold'
+                                    : 'text-text-secondary hover:bg-gray-50 hover:text-text-primary'
+                            )}
+                        >
+                            {pathname.startsWith('/analyze-improve') && <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary rounded-full" />}
+                            <div className="flex items-center">
+                                <Sparkles size={20} className={cn("mr-3 transition-colors", pathname.startsWith('/analyze-improve') ? 'text-primary' : 'text-text-placeholder group-hover:text-text-secondary')} />
+                                Analyze & Improve
+                            </div>
+                            {isAnalyzeExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                        </button>
+                        
+                        {isAnalyzeExpanded && (
+                            <div className="mt-1 ml-4 pl-3 border-l border-border/80 space-y-1">
+                                {analyzeImproveChildren.map((child) => {
                                     const isChildActive = pathname === child.href;
                                     return (
                                         <Link
