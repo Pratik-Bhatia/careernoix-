@@ -8,6 +8,7 @@ import { CircularScore } from '@/components/resume-score/CircularScore';
 import { RadarScoreChart } from '@/components/resume-score/RadarScoreChart';
 import { ScoreHistoryChart } from '@/components/resume-score/ScoreHistoryChart';
 import { ResumePreview } from '@/components/resume-builder/ResumePreview';
+import { PreviewPanel } from '@/components/resume-builder/PreviewPanel';
 import { FeaturePlaceholder } from '@/components/ui/FeaturePlaceholder';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
@@ -179,17 +180,15 @@ export default function ResumeScorePage() {
                     
                     {/* Live Preview Panel */}
                     <Card className="overflow-hidden border-border bg-white shadow-sm">
-                        <div className="px-4 py-3 border-b border-border bg-gray-50 flex items-center justify-between">
-                            <span className="font-bold text-xs text-text-secondary uppercase tracking-wider">Live Preview</span>
+                        <div className="px-5 py-4 border-b border-border bg-gray-50 flex items-center justify-between">
+                            <h3 className="font-bold text-sm text-text-primary uppercase tracking-wider">Live Preview</h3>
                             <Link href="/resume-builder/personal-info" className="text-xs text-primary font-medium hover:underline flex items-center">
                                 Edit <ChevronRight size={12} className="ml-0.5" />
                             </Link>
                         </div>
-                        <div className="p-0 bg-gray-100 max-h-[400px] overflow-y-auto custom-scrollbar">
-                            <div className="transform scale-[0.6] origin-top">
-                                <ResumePreview />
-                            </div>
-                        </div>
+                        <PreviewPanel className="max-h-[700px] overflow-y-auto">
+                            <ResumePreview />
+                        </PreviewPanel>
                     </Card>
 
                     {/* Benchmark Comparison */}

@@ -1,6 +1,7 @@
 'use client';
 
 import { ResumePreview } from '@/components/resume-builder/ResumePreview';
+import { PreviewPanel } from '@/components/resume-builder/PreviewPanel';
 import { ResumeScore } from '@/components/resume-builder/ResumeScore';
 import { useResumeSync } from '@/store/useResumeSync';
 import { useResumeStore } from '@/store/useResumeStore';
@@ -64,7 +65,9 @@ export default function ResumeBuilderLayout({
                     <ResumeScore />
                     <div>
                         <div className="mb-2 font-bold text-xs text-text-secondary uppercase tracking-wider pl-1">Live Preview</div>
-                        <ResumePreview />
+                        <PreviewPanel className="max-h-[600px] overflow-y-auto">
+                            <ResumePreview />
+                        </PreviewPanel>
                     </div>
                 </div>
             </div>

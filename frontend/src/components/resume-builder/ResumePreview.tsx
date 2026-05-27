@@ -27,7 +27,7 @@ export function ResumePreview() {
     }
 
     return (
-        <div className="bg-surface rounded-2xl border border-border shadow-sm p-6 sm:p-8 space-y-6 text-xs max-h-[calc(100vh-12rem)] overflow-y-auto scrollbar-thin text-text-primary">
+        <div className="space-y-8 text-sm text-gray-900 leading-relaxed font-serif">
             {/* Header / Personal Info */}
             <div className="text-center space-y-2 border-b border-gray-100 pb-4">
                 <h1 className="text-xl font-bold tracking-tight">{personalInfo.fullName || 'Your Name'}</h1>

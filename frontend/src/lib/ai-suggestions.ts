@@ -28,6 +28,13 @@ export interface ProjectRecommendation {
     difficulty: DifficultyLevel;
     categories: FilterCategory[];
     draftProject: Omit<ProjectEntry, 'id'>;
+    
+    // Detailed Metadata for Modal
+    recruiterValue: string;
+    suggestedBullets: string[];
+    estimatedTime: string;
+    suggestedTechStack: string[];
+    roleAlignment: string;
 }
 
 // ─── Project Pool ────────────────────────────────────────────────────────────
@@ -44,6 +51,15 @@ const PROJECT_POOL: ProjectRecommendation[] = [
         techTags: ['Python', 'SQL', 'Power BI', 'Pandas', 'ETL'],
         difficulty: 'Intermediate',
         categories: ['Data Analysis', 'High Impact', 'ATS Boosters'],
+        recruiterValue: 'Demonstrates ability to translate raw data into actionable business insights—a top priority for hiring managers.',
+        estimatedTime: '2-3 Weeks',
+        suggestedTechStack: ['Python', 'PostgreSQL', 'Pandas', 'Power BI / Tableau', 'SQLAlchemy'],
+        roleAlignment: 'Business Analyst, Data Analyst, BI Engineer',
+        suggestedBullets: [
+            'Built an interactive sales analytics dashboard using Python and Power BI.',
+            'Processed 50,000+ records using SQL and Pandas to track revenue trends and churn rate.',
+            'Automated weekly KPI reporting pipelines, reducing manual effort by 8 hours/week.'
+        ],
         draftProject: {
             name: 'Sales Analytics Dashboard',
             role: 'Data Analyst (Draft)',
@@ -63,6 +79,15 @@ const PROJECT_POOL: ProjectRecommendation[] = [
         techTags: ['Python', 'scikit-learn', 'K-Means', 'Pandas', 'Matplotlib'],
         difficulty: 'Intermediate',
         categories: ['Data Analysis', 'Machine Learning', 'High Impact'],
+        recruiterValue: 'Shows practical application of unsupervised learning to drive direct marketing ROI.',
+        estimatedTime: '3-4 Weeks',
+        suggestedTechStack: ['Python', 'Scikit-Learn', 'Pandas', 'Matplotlib', 'Seaborn'],
+        roleAlignment: 'Data Scientist, Product Analyst, Growth Hacker',
+        suggestedBullets: [
+            'Performed customer segmentation using K-Means clustering on 20,000+ records.',
+            'Identified 4 distinct customer personas improving targeted campaign ROI by 25%.',
+            'Built Seaborn/Matplotlib visualizations to communicate actionable insights to marketing stakeholders.'
+        ],
         draftProject: {
             name: 'Customer Segmentation Analysis',
             role: 'Data Scientist (Draft)',
@@ -82,6 +107,15 @@ const PROJECT_POOL: ProjectRecommendation[] = [
         techTags: ['Python', 'Prophet', 'ARIMA', 'Pandas', 'NumPy'],
         difficulty: 'Advanced',
         categories: ['Data Analysis', 'Machine Learning', 'High Impact'],
+        recruiterValue: 'Proves advanced statistical knowledge and predictive capabilities critical for operational efficiency.',
+        estimatedTime: '4-5 Weeks',
+        suggestedTechStack: ['Python', 'Facebook Prophet', 'Statsmodels', 'Pandas', 'Jupyter Notebook'],
+        roleAlignment: 'Quantitative Analyst, Data Scientist, Supply Chain Analyst',
+        suggestedBullets: [
+            'Built a Prophet-based forecasting model for monthly revenue with 92% accuracy.',
+            'Analyzed 3 years of historical data using Python/Pandas to identify seasonal trends.',
+            'Delivered predictive model that reduced over-ordering costs by an estimated 15%.'
+        ],
         draftProject: {
             name: 'Revenue Forecasting Model',
             role: 'Data Analyst (Draft)',
@@ -101,6 +135,15 @@ const PROJECT_POOL: ProjectRecommendation[] = [
         techTags: ['Python', 'HuggingFace', 'BERT', 'scikit-learn', 'Flask'],
         difficulty: 'Advanced',
         categories: ['Machine Learning', 'High Impact', 'Trending'],
+        recruiterValue: 'Highlights modern deep learning skills and the rare ability to deploy models into production.',
+        estimatedTime: '3-5 Weeks',
+        suggestedTechStack: ['Python', 'HuggingFace Transformers', 'PyTorch / TensorFlow', 'Flask / FastAPI', 'Docker'],
+        roleAlignment: 'ML Engineer, AI Researcher, NLP Engineer',
+        suggestedBullets: [
+            'Trained a BERT-based NLP classifier on 100,000+ reviews achieving 89% accuracy.',
+            'Implemented text preprocessing pipelines with advanced tokenization and stop-word removal.',
+            'Deployed the optimized model as a Flask REST API within a Docker container for real-time inference.'
+        ],
         draftProject: {
             name: 'Sentiment Analysis Classifier',
             role: 'ML Engineer (Draft)',
@@ -120,6 +163,15 @@ const PROJECT_POOL: ProjectRecommendation[] = [
         techTags: ['React', 'Next.js', 'TypeScript', 'TailwindCSS', 'Vercel'],
         difficulty: 'Beginner',
         categories: ['Frontend', 'Beginner Friendly', 'Trending'],
+        recruiterValue: 'Serves as immediate, verifiable proof of modern frontend capabilities and design sensibility.',
+        estimatedTime: '1-2 Weeks',
+        suggestedTechStack: ['Next.js', 'React', 'Tailwind CSS', 'Framer Motion', 'Vercel'],
+        roleAlignment: 'Frontend Developer, UI/UX Engineer, Web Developer',
+        suggestedBullets: [
+            'Built a responsive portfolio using Next.js 14 and TypeScript showcasing 6+ projects.',
+            'Implemented smooth page transitions, dark mode, and custom animations using Framer Motion.',
+            'Deployed on Vercel achieving a perfect 100 Lighthouse performance and accessibility score.'
+        ],
         draftProject: {
             name: 'Personal Developer Portfolio',
             role: 'Frontend Developer (Draft)',
@@ -139,6 +191,15 @@ const PROJECT_POOL: ProjectRecommendation[] = [
         techTags: ['React', 'Node.js', 'PostgreSQL', 'REST API', 'TypeScript'],
         difficulty: 'Intermediate',
         categories: ['Frontend', 'Backend', 'High Impact', 'ATS Boosters'],
+        recruiterValue: 'Proves end-to-end full-stack competence, database design, and complex state management.',
+        estimatedTime: '4-6 Weeks',
+        suggestedTechStack: ['Next.js / React', 'Node.js / Express', 'PostgreSQL', 'Prisma ORM', 'Recharts'],
+        roleAlignment: 'Full Stack Engineer, Frontend Engineer, Software Engineer',
+        suggestedBullets: [
+            'Developed a full-stack admin panel handling complex CRUD operations for product and order management.',
+            'Built secure REST APIs with Node.js/Express backed by a PostgreSQL database.',
+            'Implemented role-based access control and dynamic analytics charts; reduced page load time by 40%.'
+        ],
         draftProject: {
             name: 'E-commerce Admin Dashboard',
             role: 'Full Stack Developer (Draft)',
@@ -158,6 +219,15 @@ const PROJECT_POOL: ProjectRecommendation[] = [
         techTags: ['Node.js', 'Express', 'JWT', 'PostgreSQL', 'Docker', 'Swagger'],
         difficulty: 'Intermediate',
         categories: ['Backend', 'High Impact', 'ATS Boosters'],
+        recruiterValue: 'Demonstrates critical backend security patterns, API design standards, and scalability considerations.',
+        estimatedTime: '2-4 Weeks',
+        suggestedTechStack: ['Node.js', 'Express', 'PostgreSQL', 'Docker', 'Swagger / OpenAPI'],
+        roleAlignment: 'Backend Developer, Platform Engineer, Systems Engineer',
+        suggestedBullets: [
+            'Built a scalable RESTful API using Node.js and Express featuring secure JWT-based authentication.',
+            'Implemented advanced security measures including API rate limiting and strict input validation.',
+            'Containerized the application with Docker and auto-generated OpenAPI (Swagger) documentation.'
+        ],
         draftProject: {
             name: 'RESTful API with JWT Authentication',
             role: 'Backend Developer (Draft)',
@@ -177,6 +247,15 @@ const PROJECT_POOL: ProjectRecommendation[] = [
         techTags: ['Docker', 'GitHub Actions', 'AWS EC2', 'YAML', 'Bash'],
         difficulty: 'Intermediate',
         categories: ['Backend', 'ATS Boosters', 'Trending'],
+        recruiterValue: 'Proves a mindset for automation, quality assurance, and modern deployment practices.',
+        estimatedTime: '1-3 Weeks',
+        suggestedTechStack: ['Docker', 'GitHub Actions', 'AWS EC2 / DigitalOcean', 'Bash / YAML', 'Jest / PyTest'],
+        roleAlignment: 'DevOps Engineer, Site Reliability Engineer, Senior Backend Developer',
+        suggestedBullets: [
+            'Engineered a robust CI/CD pipeline using GitHub Actions for automated unit testing and Docker image builds.',
+            'Implemented zero-downtime rolling deployment strategies to AWS EC2 instances.',
+            'Reduced average deployment time from 30 minutes to under 4 minutes while increasing release confidence.'
+        ],
         draftProject: {
             name: 'CI/CD Pipeline with Docker & GitHub Actions',
             role: 'DevOps Engineer (Draft)',
@@ -196,6 +275,15 @@ const PROJECT_POOL: ProjectRecommendation[] = [
         techTags: ['Python', 'SQL', 'pandas', 'Cron', 'SMTP'],
         difficulty: 'Beginner',
         categories: ['Data Analysis', 'Beginner Friendly', 'ATS Boosters'],
+        recruiterValue: 'Highlights a proactive approach to solving manual business problems with simple, effective coding.',
+        estimatedTime: '1-2 Weeks',
+        suggestedTechStack: ['Python', 'SQL', 'Pandas', 'Cron', 'SMTP / SendGrid API'],
+        roleAlignment: 'Data Analyst, Operations Analyst, BI Analyst',
+        suggestedBullets: [
+            'Developed an automated Python script to extract and aggregate KPI data from disparate SQL databases.',
+            'Scheduled the pipeline via cron jobs to deliver formatted weekly Excel reports to 3 departments.',
+            'Eliminated approximately 6 hours per week of manual reporting work, improving data delivery reliability.'
+        ],
         draftProject: {
             name: 'Automated KPI Reporting System',
             role: 'Business Analyst (Draft)',
@@ -215,6 +303,15 @@ const PROJECT_POOL: ProjectRecommendation[] = [
         techTags: ['React', 'Socket.io', 'Node.js', 'MongoDB', 'JWT'],
         difficulty: 'Intermediate',
         categories: ['Frontend', 'Backend', 'Trending'],
+        recruiterValue: 'Shows mastery of event-driven programming, complex frontend state, and persistent connections.',
+        estimatedTime: '3-5 Weeks',
+        suggestedTechStack: ['React', 'Node.js', 'Socket.io', 'Redis (optional)', 'MongoDB'],
+        roleAlignment: 'Full Stack Developer, Frontend Engineer, Web Application Developer',
+        suggestedBullets: [
+            'Engineered a real-time chat application leveraging WebSockets via Socket.io for instantaneous messaging.',
+            'Implemented robust features including persistent message history, online presence tracking, and JWT auth.',
+            'Optimized event handling to scale gracefully to 100+ concurrent WebSocket connections.'
+        ],
         draftProject: {
             name: 'Real-Time Chat Application',
             role: 'Full Stack Developer (Draft)',

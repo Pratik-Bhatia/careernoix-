@@ -11,8 +11,10 @@ import {
 import { calculateResumeScore } from '@/lib/scoring';
 import { SuggestionCard } from '@/components/ai-suggestions/SuggestionCard';
 import { ProjectRecommendationCard } from '@/components/ai-suggestions/ProjectRecommendationCard';
+import { ProjectDetailsModal } from '@/components/ai-suggestions/ProjectDetailsModal';
 import { FeaturePlaceholder } from '@/components/ui/FeaturePlaceholder';
 import { ResumePreview } from '@/components/resume-builder/ResumePreview';
+import { PreviewPanel } from '@/components/resume-builder/PreviewPanel';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { CircularScore } from '@/components/resume-score/CircularScore';
@@ -34,6 +36,10 @@ export default function AISuggestionsPage() {
     // UI State
     const [activeTab, setActiveTab] = useState<FilterCategory>('All');
     const [isRegenerating, setIsRegenerating] = useState(false);
+    
+    // Modal State
+    const [selectedProject, setSelectedProject] = useState<any>(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     // Memoized core logic
     const scoreResult = useMemo(() => calculateResumeScore(resumeData), [resumeData]);
@@ -137,7 +143,14 @@ export default function AISuggestionsPage() {
                                     <Briefcase size={16} /> Recommended Projects
                                 </h3>
                                 {filteredProjects.map(project => (
-                                    <ProjectRecommendationCard key={project.id} project={project} />
+                                    <ProjectRecommendationCard 
+                                        key={project.id} 
+                                        project={project} 
+                                        onViewDetails={(p) => {
+                                            setSelectedProject(p);
+                                            setIsModalOpen(true);
+                                        }}
+                                    />
                                 ))}
                             </div>
                         ) : (
@@ -206,16 +219,22 @@ export default function AISuggestionsPage() {
                         <div className="px-4 py-3 border-b border-border bg-gray-50 flex items-center justify-between">
                             <span className="font-bold text-xs text-text-secondary uppercase tracking-wider">Live Preview</span>
                         </div>
-                        <div className="p-0 bg-gray-100 max-h-[300px] overflow-y-auto custom-scrollbar">
-                            <div className="transform scale-[0.6] origin-top">
-                                <ResumePreview />
-                            </div>
-                        </div>
+                        <PreviewPanel className="max-h-[500px] overflow-y-auto">
+                            <ResumePreview />
+                        </PreviewPanel>
                     </Card>
 
                 </div>
 
             </div>
+
+            {/* Project Details Modal */}
+            <ProjectDetailsModal 
+                project={selectedProject} 
+                isOpen={isModalOpen} 
+                onClose={() => setIsModalOpen(false)} 
+            />
+
         </div>
     );
 }

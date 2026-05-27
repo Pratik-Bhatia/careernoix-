@@ -17,9 +17,10 @@ import { cn } from '@/lib/utils';
 
 interface ProjectRecommendationCardProps {
     project: ProjectRecommendation;
+    onViewDetails: (project: ProjectRecommendation) => void;
 }
 
-export function ProjectRecommendationCard({ project }: ProjectRecommendationCardProps) {
+export function ProjectRecommendationCard({ project, onViewDetails }: ProjectRecommendationCardProps) {
     const { addDraftProject } = useResumeStore();
     const [actionState, setActionState] = useState<'idle' | 'success' | 'duplicate'>('idle');
 
@@ -137,7 +138,11 @@ export function ProjectRecommendationCard({ project }: ProjectRecommendationCard
                     )}
                     {actionState === 'duplicate' && 'Already Added'}
                 </Button>
-                <Button variant="secondary" className="w-full sm:w-auto flex-1 sm:flex-none">
+                <Button 
+                    variant="secondary" 
+                    className="w-full sm:w-auto flex-1 sm:flex-none"
+                    onClick={() => onViewDetails(project)}
+                >
                     View Details
                 </Button>
             </div>
