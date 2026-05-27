@@ -90,6 +90,10 @@ interface ResumeStore {
     setCertifications: (entries: CertificationEntry[]) => void;
     setLanguages: (entries: LanguageEntry[]) => void;
 
+    // AI Suggestions Helpers
+    addDraftProject: (project: Omit<ProjectEntry, 'id'>) => boolean;
+    addDraftSkill: (skill: string) => boolean;
+
     // Simple Array lists (Skills, Achievements)
     setSkills: (skills: string[]) => void;
     setAchievements: (achievements: string[]) => void;
@@ -259,6 +263,40 @@ export const useResumeStore = create<ResumeStore>()(
             setSkills: (skills) => set((state) => ({
                 resumeData: { ...state.resumeData, skills }
             })),
+
+            addDraftProject: (project) => {
+                const state = get();
+                // Prevent duplicate by checking name
+                if (state.resumeData.projects.some(p => p.name.toLowerCase() === project.name.toLowerCase())) {
+                    return false;
+                }
+                const newProject: ProjectEntry = {
+                    ...project,
+                    id: `proj-${Date.now()}`
+                };
+                set((state) => ({
+                    resumeData: {
+                        ...state.resumeData,
+                        projects: [...state.resumeData.projects, newProject]
+                    }
+                }));
+                return true;
+            },
+
+            addDraftSkill: (skill) => {
+                const state = get();
+                // Prevent duplicate skill (case insensitive)
+                if (state.resumeData.skills.some(s => s.toLowerCase() === skill.toLowerCase())) {
+                    return false;
+                }
+                set((state) => ({
+                    resumeData: {
+                        ...state.resumeData,
+                        skills: [...state.resumeData.skills, skill]
+                    }
+                }));
+                return true;
+            },
 
             setAchievements: (achievements) => set((state) => ({
                 resumeData: { ...state.resumeData, achievements }
