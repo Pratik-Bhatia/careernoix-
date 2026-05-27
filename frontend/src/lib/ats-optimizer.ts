@@ -159,15 +159,19 @@ export function optimizeResume(resume: ResumeData, jdText: string): Optimization
     const optimizedResume: ResumeData = JSON.parse(JSON.stringify(resume));
     
     // Deterministic Enhancement Logic:
-    // A. Add top missing skills to the skills array
+    // A. Add top missing skills to the skills array (limit to 3 to avoid stuffing)
     let addedKeywords = 0;
-    const topMissingSkills = missing.slice(0, 5).map(m => m.term);
+    const topMissingSkills = missing
+        .filter(m => m.category === 'Technical Skills' || m.category === 'Tools & Frameworks')
+        .slice(0, 3)
+        .map(m => m.term);
     
     if (topMissingSkills.length > 0) {
-        // Only add them if they fit naturally (for V1, we just append them to the skills list)
         optimizedResume.skills = [...new Set([...optimizedResume.skills, ...topMissingSkills])];
-        addedKeywords += topMissingSkills.length;
-        explanations.push(`Added missing critical skills to your skills section: ${topMissingSkills.join(', ')}.`);
+        // Count only skills not already present
+        addedKeywords += topMissingSkills.filter(s => !resume.skills.includes(s)).length;
+        const skillsList = topMissingSkills.slice(0, 3).join(', ');
+        explanations.push(`Added ${topMissingSkills.length} in-demand skills from the JD to your skills section: ${skillsList}.`);
     }
 
     // B. Enhance Summary with business keywords if missing
@@ -194,12 +198,13 @@ export function optimizeResume(resume: ResumeData, jdText: string): Optimization
         }
     }
 
-    // Calculate score boost
-    const newKeywordMatchPercent = jdKeywords.length > 0 ? ((matched.length + addedKeywords) / jdKeywords.length) : 0;
-    let newScore = baseScore + Math.round(newKeywordMatchPercent * 60);
-    if (newScore > 95) newScore = 95; // Cap to be realistic
-    
-    const scoreBoost = Math.max(0, newScore - matchScore);
+    // Calculate score boost — conservative, capped at +18 to maintain credibility
+    // Each keyword added contributes ~1.5 pts, summary improvement ~3 pts, tool bullet ~2 pts
+    const RAW_BOOST_PER_SKILL = 1.5;
+    const SUMMARY_BOOST = missingBiz.length > 0 ? 3 : 0;
+    const TOOL_BOOST = missingTools.length > 0 && optimizedResume.experience.length > 0 ? 2 : 0;
+    const rawBoost = (addedKeywords * RAW_BOOST_PER_SKILL) + SUMMARY_BOOST + TOOL_BOOST;
+    const scoreBoost = Math.min(18, Math.max(0, Math.round(rawBoost)));
 
     return {
         matchScore,

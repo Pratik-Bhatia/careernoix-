@@ -59,10 +59,16 @@ export default function AIResumeOptimizerPage() {
         setHasApplied(true);
     };
 
+    const handleDownloadPDF = () => {
+        // Trigger the browser's native print-to-PDF dialog.
+        // In a real V2, this would hit a backend puppeteer/pdf-generation service.
+        window.print();
+    };
+
     return (
         <div className="pb-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
             {/* Header */}
-            <div className="mb-8">
+            <div className="mb-8 print:hidden">
                 <div className="flex items-center gap-3 mb-1">
                     <h1 className="text-3xl font-bold text-text-primary tracking-tight">AI Resume Optimizer</h1>
                     <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-purple-100 text-purple-700 border border-purple-200">
@@ -75,7 +81,7 @@ export default function AIResumeOptimizerPage() {
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 xl:gap-8 items-start">
                 
                 {/* ─── LEFT PANEL: Input (3 cols) ─── */}
-                <div className="lg:col-span-3 space-y-6">
+                <div className="lg:col-span-3 space-y-6 print:hidden">
                     {/* Active Resume Indicator */}
                     <Card className="p-4 border-border bg-gray-50/50">
                         <div className="flex items-center justify-between mb-3">
@@ -128,19 +134,10 @@ export default function AIResumeOptimizerPage() {
                 </div>
 
                 {/* ─── CENTER PANEL: Analysis Results (4 cols) ─── */}
-                <div className="lg:col-span-4 space-y-6">
-                    {!result && !isAnalyzing ? (
-                        <Card className="p-10 flex flex-col items-center justify-center text-center border-dashed bg-gray-50/50 h-[600px]">
-                            <div className="w-16 h-16 bg-purple-50 rounded-full flex items-center justify-center mb-4">
-                                <Wand2 className="w-8 h-8 text-purple-500" />
-                            </div>
-                            <h3 className="text-lg font-bold text-text-primary mb-2">Ready to Optimize</h3>
-                            <p className="text-sm text-text-secondary max-w-xs">
-                                Paste a job description and click analyze to see how well your resume matches and what keywords you're missing.
-                            </p>
-                        </Card>
-                    ) : isAnalyzing ? (
-                        <Card className="p-10 flex flex-col items-center justify-center text-center border-border h-[600px]">
+                <div className="lg:col-span-4 space-y-6 print:hidden">
+                    {/* Score Card / Top State */}
+                    {isAnalyzing ? (
+                        <Card className="p-10 flex flex-col items-center justify-center text-center border-border">
                             <div className="w-16 h-16 border-4 border-primary/20 border-t-primary rounded-full animate-spin mb-4" />
                             <h3 className="text-lg font-bold text-text-primary mb-1">Scanning Keywords...</h3>
                             <p className="text-sm text-text-secondary">Comparing your experience against the JD.</p>
@@ -195,49 +192,69 @@ export default function AIResumeOptimizerPage() {
                                     )}
                                 </Card>
                             )}
-
-                            {/* Missing Keywords by Group */}
-                            <Card className="p-5 border-border shadow-sm">
-                                <h4 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-4">Missing Keywords</h4>
-                                {result.missingKeywordGroups.length === 0 ? (
-                                    <p className="text-sm text-gray-500 italic">No major missing keywords detected.</p>
-                                ) : (
-                                    <div className="space-y-4">
-                                        {result.missingKeywordGroups.map(group => (
-                                            <div key={group.category}>
-                                                <h5 className="text-[11px] font-semibold text-gray-700 mb-2">{group.category}</h5>
-                                                <div className="flex flex-wrap gap-1.5">
-                                                    {group.keywords.map(kw => (
-                                                        <span key={kw} className="px-2 py-0.5 bg-red-50 text-red-700 border border-red-200 rounded text-xs">
-                                                            {kw}
-                                                        </span>
-                                                    ))}
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                )}
-                            </Card>
-                            
-                            {/* Strengths */}
-                            <Card className="p-5 border-border shadow-sm">
-                                <h4 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">Resume Strengths</h4>
-                                <ul className="space-y-2">
-                                    {result.strengths.map((str, i) => (
-                                        <li key={i} className="text-sm text-gray-700 flex items-start gap-2">
-                                            <CheckCircle2 size={16} className="text-green-500 flex-shrink-0 mt-0.5" />
-                                            {str}
-                                        </li>
-                                    ))}
-                                </ul>
-                            </Card>
                         </div>
-                    ) : null}
+                    ) : (
+                        <Card className="p-10 flex flex-col items-center justify-center text-center border-dashed bg-gray-50/50">
+                            <div className="w-16 h-16 bg-purple-50 rounded-full flex items-center justify-center mb-4">
+                                <Wand2 className="w-8 h-8 text-purple-500" />
+                            </div>
+                            <h3 className="text-lg font-bold text-text-primary mb-2">Ready to Optimize</h3>
+                            <p className="text-sm text-text-secondary max-w-xs">
+                                Paste a job description and click analyze to see your ATS match score.
+                            </p>
+                        </Card>
+                    )}
+
+                    {/* Missing Keywords by Group */}
+                    <Card className="p-5 border-border shadow-sm">
+                        <h4 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-4">Missing Keywords</h4>
+                        {!result && !isAnalyzing ? (
+                            <div className="py-4 text-center text-sm text-gray-500 bg-gray-50/50 rounded-md border border-dashed border-gray-200">
+                                Run optimization analysis to discover missing keywords.
+                            </div>
+                        ) : result?.missingKeywordGroups.length === 0 ? (
+                            <p className="text-sm text-gray-500 italic">No major missing keywords detected.</p>
+                        ) : result ? (
+                            <div className="space-y-4">
+                                {result.missingKeywordGroups.map(group => (
+                                    <div key={group.category}>
+                                        <h5 className="text-[11px] font-semibold text-gray-700 mb-2">{group.category}</h5>
+                                        <div className="flex flex-wrap gap-1.5">
+                                            {group.keywords.map(kw => (
+                                                <span key={kw} className="px-2 py-0.5 bg-red-50 text-red-700 border border-red-200 rounded text-xs">
+                                                    {kw}
+                                                </span>
+                                            ))}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        ) : null}
+                    </Card>
+                    
+                    {/* Strengths */}
+                    <Card className="p-5 border-border shadow-sm">
+                        <h4 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">Resume Strengths</h4>
+                        {!result && !isAnalyzing ? (
+                            <div className="py-4 text-center text-sm text-gray-500 bg-gray-50/50 rounded-md border border-dashed border-gray-200">
+                                Run optimization analysis to discover resume strengths and improvement opportunities.
+                            </div>
+                        ) : result ? (
+                            <ul className="space-y-2">
+                                {result.strengths.map((str, i) => (
+                                    <li key={i} className="text-sm text-gray-700 flex items-start gap-2">
+                                        <CheckCircle2 size={16} className="text-green-500 flex-shrink-0 mt-0.5" />
+                                        {str}
+                                    </li>
+                                ))}
+                            </ul>
+                        ) : null}
+                    </Card>
                 </div>
 
                 {/* ─── RIGHT PANEL: Live Preview (5 cols) ─── */}
-                <div className="lg:col-span-5 space-y-4 lg:sticky lg:top-6">
-                    <div className="flex items-center justify-between">
+                <div className="lg:col-span-5 space-y-4 lg:sticky lg:top-6 print:col-span-12">
+                    <div className="flex items-center justify-between print:hidden">
                         <div className="flex p-1 bg-gray-100 rounded-lg border border-border">
                             <button
                                 onClick={() => setPreviewTab('original')}
@@ -259,7 +276,7 @@ export default function AIResumeOptimizerPage() {
                                 <Wand2 size={12} /> Optimized {result && !hasApplied && <span className="w-2 h-2 bg-purple-500 rounded-full ml-1" />}
                             </button>
                         </div>
-                        <Button variant="outline" size="sm" className="gap-2 text-xs">
+                        <Button variant="outline" size="sm" className="gap-2 text-xs print:hidden" onClick={handleDownloadPDF}>
                             <Download size={14} /> Download PDF
                         </Button>
                     </div>
