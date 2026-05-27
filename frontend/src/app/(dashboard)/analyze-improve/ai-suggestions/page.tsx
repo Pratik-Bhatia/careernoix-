@@ -2,9 +2,15 @@
 
 import React, { useMemo, useState } from 'react';
 import { useResumeStore } from '@/store/useResumeStore';
-import { generateDeterministicSuggestions, SuggestionCategory } from '@/lib/ai-suggestions';
+import { 
+    generateDeterministicSuggestions, 
+    getRecommendedProjects,
+    filterProjects,
+    FilterCategory
+} from '@/lib/ai-suggestions';
 import { calculateResumeScore } from '@/lib/scoring';
 import { SuggestionCard } from '@/components/ai-suggestions/SuggestionCard';
+import { ProjectRecommendationCard } from '@/components/ai-suggestions/ProjectRecommendationCard';
 import { FeaturePlaceholder } from '@/components/ui/FeaturePlaceholder';
 import { ResumePreview } from '@/components/resume-builder/ResumePreview';
 import { Card } from '@/components/ui/Card';
@@ -15,7 +21,8 @@ import {
     Sparkles, 
     ShieldAlert, 
     Lightbulb,
-    ChevronRight
+    ChevronRight,
+    Briefcase
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
@@ -25,12 +32,15 @@ export default function AISuggestionsPage() {
     const progress = getOverallProgress();
     
     // UI State
-    const [activeTab, setActiveTab] = useState<SuggestionCategory | 'All'>('All');
+    const [activeTab, setActiveTab] = useState<FilterCategory>('All');
     const [isRegenerating, setIsRegenerating] = useState(false);
 
     // Memoized core logic
     const scoreResult = useMemo(() => calculateResumeScore(resumeData), [resumeData]);
-    const allSuggestions = useMemo(() => generateDeterministicSuggestions(resumeData), [resumeData]);
+    
+    // We now have two engines: The new Project Recommendation Engine and the Legacy ATS Engine
+    const recommendedProjects = useMemo(() => getRecommendedProjects(resumeData), [resumeData]);
+    const atsSuggestions = useMemo(() => generateDeterministicSuggestions(resumeData), [resumeData]);
 
     const handleRegenerate = () => {
         setIsRegenerating(true);
@@ -38,8 +48,8 @@ export default function AISuggestionsPage() {
         setTimeout(() => setIsRegenerating(false), 800);
     };
 
-    // Filter logic
-    const filteredSuggestions = allSuggestions.filter(s => activeTab === 'All' || s.category === activeTab);
+    // Filter logic for projects
+    const filteredProjects = filterProjects(recommendedProjects, activeTab, resumeData.skills);
 
     // Empty state for brand new resumes
     if (progress < 15 && resumeData.experience.length === 0) {
@@ -47,7 +57,7 @@ export default function AISuggestionsPage() {
             <div className="h-full flex items-center justify-center pt-10">
                 <FeaturePlaceholder 
                     title="Not Enough Data"
-                    description="Complete more of your resume sections to generate accurate AI suggestions."
+                    description="Complete more of your resume sections to generate personalized project recommendations."
                     icon={<ShieldAlert className="w-8 h-8 text-yellow-500" />}
                     isBeta={false}
                     showResumeBuilderButton={true}
@@ -56,7 +66,18 @@ export default function AISuggestionsPage() {
         );
     }
 
-    const tabs: Array<SuggestionCategory | 'All'> = ['All', 'Projects', 'Skills', 'Content', 'Keywords'];
+    const tabs: FilterCategory[] = [
+        'All', 
+        'Based On Your Skills', 
+        'High Impact', 
+        'Beginner Friendly', 
+        'ATS Boosters',
+        'Trending',
+        'Data Analysis',
+        'Machine Learning',
+        'Frontend',
+        'Backend'
+    ];
 
     return (
         <div className="pb-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -65,12 +86,12 @@ export default function AISuggestionsPage() {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">
                 <div>
                     <div className="flex items-center gap-3 mb-1">
-                        <h1 className="text-3xl font-bold text-text-primary tracking-tight">AI Suggestions</h1>
+                        <h1 className="text-3xl font-bold text-text-primary tracking-tight">AI Project Recommendations</h1>
                         <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-primary-light text-primary border border-primary/20">
                             Beta
                         </span>
                     </div>
-                    <p className="text-text-secondary">Actionable, data-driven recommendations to improve your ATS score.</p>
+                    <p className="text-text-secondary">Personalized project ideas based on your skills and target role to boost your ATS ranking.</p>
                 </div>
                 <Button 
                     variant="outline" 
@@ -79,7 +100,7 @@ export default function AISuggestionsPage() {
                     disabled={isRegenerating}
                 >
                     <RefreshCcw size={16} className={cn(isRegenerating && "animate-spin")} />
-                    {isRegenerating ? 'Analyzing...' : 'Regenerate'}
+                    {isRegenerating ? 'Analyzing...' : 'Refresh'}
                 </Button>
             </div>
 
@@ -107,21 +128,40 @@ export default function AISuggestionsPage() {
                     </div>
 
                     {/* Suggestions Feed */}
-                    <div className={cn("space-y-4 transition-opacity duration-300", isRegenerating ? "opacity-50" : "opacity-100")}>
-                        {filteredSuggestions.length > 0 ? (
-                            filteredSuggestions.map(suggestion => (
-                                <SuggestionCard key={suggestion.id} suggestion={suggestion} />
-                            ))
+                    <div className={cn("space-y-6 transition-opacity duration-300", isRegenerating ? "opacity-50" : "opacity-100")}>
+                        
+                        {/* New Rich Project Cards */}
+                        {filteredProjects.length > 0 ? (
+                            <div className="space-y-4">
+                                <h3 className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-2 flex items-center gap-2">
+                                    <Briefcase size={16} /> Recommended Projects
+                                </h3>
+                                {filteredProjects.map(project => (
+                                    <ProjectRecommendationCard key={project.id} project={project} />
+                                ))}
+                            </div>
                         ) : (
                             <Card className="p-12 flex flex-col items-center justify-center text-center border-dashed">
-                                <div className="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mb-4">
-                                    <Sparkles className="w-8 h-8 text-green-500" />
+                                <div className="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mb-4">
+                                    <Sparkles className="w-8 h-8 text-blue-500" />
                                 </div>
-                                <h3 className="text-xl font-bold text-text-primary mb-2">You're fully optimized!</h3>
+                                <h3 className="text-xl font-bold text-text-primary mb-2">No projects found</h3>
                                 <p className="text-text-secondary max-w-sm">
-                                    We couldn't find any actionable suggestions for the "{activeTab}" category. Great job keeping your resume sharp.
+                                    We couldn't find any specific project recommendations for the "{activeTab}" category.
                                 </p>
                             </Card>
+                        )}
+
+                        {/* Legacy ATS Tips */}
+                        {activeTab === 'All' && atsSuggestions.length > 0 && (
+                             <div className="space-y-4 pt-6 border-t border-border">
+                                 <h3 className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-2 flex items-center gap-2">
+                                    <Lightbulb size={16} /> General ATS Tips
+                                </h3>
+                                {atsSuggestions.map(suggestion => (
+                                    <SuggestionCard key={suggestion.id} suggestion={suggestion} />
+                                ))}
+                            </div>
                         )}
                     </div>
                 </div>
@@ -158,19 +198,6 @@ export default function AISuggestionsPage() {
                                     </div>
                                 </div>
                             ))}
-                        </div>
-                    </Card>
-
-                    {/* AI Tip Card */}
-                    <Card className="p-4 bg-gradient-to-br from-primary/5 to-transparent border-primary/20">
-                        <div className="flex gap-3">
-                            <Lightbulb className="w-5 h-5 text-yellow-500 flex-shrink-0" />
-                            <div>
-                                <h4 className="font-bold text-sm text-text-primary mb-1">AI Tip of the Day</h4>
-                                <p className="text-xs text-text-secondary leading-relaxed">
-                                    Tailoring your "Skills" section to exactly match a job description can increase your ATS ranking by up to 40%.
-                                </p>
-                            </div>
                         </div>
                     </Card>
 
