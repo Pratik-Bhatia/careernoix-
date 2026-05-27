@@ -1,10 +1,18 @@
 'use client';
 
-import { useResumeStore } from '@/store/useResumeStore';
+import { useResumeStore, ResumeData } from '@/store/useResumeStore';
 import { Mail, Phone, MapPin, Globe, Linkedin, Github } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
-export function ResumePreview() {
-    const { resumeData } = useResumeStore();
+interface ResumePreviewProps {
+    dataOverride?: ResumeData;
+    highlightMode?: boolean;
+}
+
+export function ResumePreview({ dataOverride, highlightMode = false }: ResumePreviewProps = {}) {
+    const storeResumeData = useResumeStore(s => s.resumeData);
+    const resumeData = dataOverride || storeResumeData;
+    
     const { personalInfo, summary, experience, education, skills, projects, certifications, achievements, languages } = resumeData;
 
     const hasAnyContent = 
