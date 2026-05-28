@@ -8,9 +8,14 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True)
     email = Column(String, unique=True, index=True, nullable=False)
     full_name = Column(String, nullable=True)
+    phone = Column(String, nullable=True)
+    profile_image_url = Column(String, nullable=True)
     hashed_password = Column(String, nullable=False)
     is_active = Column(Boolean, default=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
+    deleted_at = Column(DateTime(timezone=True), nullable=True)
+
+    settings = relationship("UserSettings", back_populates="user", uselist=False)
 
     resume = relationship("Resume", back_populates="user", uselist=False)
     matches = relationship("MatchResult", back_populates="user")
@@ -70,3 +75,22 @@ class ResumeBuilderData(Base):
     )
 
     user = relationship("User", back_populates="resume_builder_data")
+
+class UserSettings(Base):
+    __tablename__ = "user_settings"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), unique=True, nullable=False, index=True)
+    
+    profile_headline = Column(String, nullable=True)
+    preferred_job_role = Column(String, nullable=True)
+    preferred_industry = Column(String, nullable=True)
+    experience_level = Column(String, nullable=True)
+    preferred_work_type = Column(String, nullable=True)
+    
+    default_resume_template = Column(String, nullable=True)
+    auto_save_enabled = Column(Boolean, default=True)
+    ai_suggestions_enabled = Column(Boolean, default=True)
+    ats_optimization_enabled = Column(Boolean, default=True)
+
+    user = relationship("User", back_populates="settings")

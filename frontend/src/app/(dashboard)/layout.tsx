@@ -11,7 +11,6 @@ import {
     X,
     User,
     Settings,
-    FileText,
     Folder,
     ChevronDown,
     ChevronUp,
@@ -65,7 +64,6 @@ export default function DashboardLayout({
     ];
 
     const bottomNavItems = [
-        { name: 'My Applications', href: '/applications', icon: FileText },
         { name: 'Settings', href: '/settings', icon: Settings },
     ];
 

@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { useResumeStore } from '@/store/useResumeStore';
+import { useSettingsStore } from '@/store/useSettingsStore';
 import { 
     generateDeterministicSuggestions, 
     getRecommendedProjects,
@@ -41,6 +42,12 @@ export default function AISuggestionsPage() {
     const [selectedProject, setSelectedProject] = useState<any>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
+    const { settings, hasLoaded, fetchSettings } = useSettingsStore();
+
+    useEffect(() => {
+        if (!hasLoaded) fetchSettings();
+    }, [hasLoaded, fetchSettings]);
+
     // Memoized core logic
     const scoreResult = useMemo(() => calculateResumeScore(resumeData), [resumeData]);
     
@@ -61,6 +68,20 @@ export default function AISuggestionsPage() {
         }
         return filterProjects(recommendedProjects, activeTab, resumeData.skills);
     }, [recommendedProjects, activeTab, resumeData.skills, savedProjectRecommendations]);
+
+    if (hasLoaded && !settings.ai_suggestions_enabled) {
+        return (
+            <div className="h-full flex items-center justify-center pt-10">
+                <FeaturePlaceholder 
+                    title="AI Suggestions Disabled"
+                    description="You have disabled AI Suggestions in your settings. Please enable them to view project recommendations."
+                    icon={<ShieldAlert className="w-8 h-8 text-yellow-500" />}
+                    isBeta={false}
+                    showResumeBuilderButton={false}
+                />
+            </div>
+        );
+    }
 
     // Empty state for brand new resumes
     if (progress < 15 && resumeData.experience.length === 0) {

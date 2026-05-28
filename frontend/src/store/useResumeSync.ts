@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import { useResumeStore, ResumeData } from './useResumeStore';
+import { useSettingsStore } from './useSettingsStore';
 import { fetchResumeBuilderData, saveResumeBuilderData } from '@/lib/api';
 
 const DEBOUNCE_MS = 1500;
@@ -37,6 +38,7 @@ const CHANNEL_NAME = 'careeronix_resume_sync';
  */
 export function useResumeSync() {
     const { resumeData, hydrateFromBackend, setSyncStatus } = useResumeStore();
+    const { settings } = useSettingsStore();
     const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     /** Set to true after first backend fetch so the save watcher activates */
     const isHydratedRef = useRef(false);
@@ -112,6 +114,9 @@ export function useResumeSync() {
     useEffect(() => {
         // Not ready yet — wait for the initial backend fetch to complete
         if (!isHydratedRef.current) return;
+        
+        // Respect user settings for auto-save
+        if (!settings.auto_save_enabled) return;
 
         // This change came from another tab / visibilitychange re-fetch.
         // Don't write it back — it was already saved by whichever tab wrote it.

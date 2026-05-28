@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useResumeStore, ResumeData } from '@/store/useResumeStore';
+import { useSettingsStore } from '@/store/useSettingsStore';
 import { PreviewPanel } from '@/components/resume-builder/PreviewPanel';
 import { ResumePreview } from '@/components/resume-builder/ResumePreview';
 import { Card } from '@/components/ui/Card';
@@ -21,8 +22,10 @@ import {
     Download,
     Check,
     ChevronRight,
-    ArrowRight
+    ArrowRight,
+    ShieldAlert
 } from 'lucide-react';
+import { FeaturePlaceholder } from '@/components/ui/FeaturePlaceholder';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 
@@ -38,6 +41,12 @@ export default function AIResumeOptimizerPage() {
     const [result, setResult] = useState<OptimizationResult | null>(null);
     const [previewTab, setPreviewTab] = useState<'original' | 'optimized'>('optimized');
     const [hasApplied, setHasApplied] = useState(false);
+
+    const { settings, hasLoaded, fetchSettings } = useSettingsStore();
+
+    useEffect(() => {
+        if (!hasLoaded) fetchSettings();
+    }, [hasLoaded, fetchSettings]);
 
     const handleAnalyze = () => {
         if (!jdText.trim()) return;
@@ -81,6 +90,20 @@ export default function AIResumeOptimizerPage() {
         // Trigger the browser's native print-to-PDF dialog.
         window.print();
     };
+
+    if (hasLoaded && !settings.ats_optimization_enabled) {
+        return (
+            <div className="h-full flex items-center justify-center pt-10">
+                <FeaturePlaceholder 
+                    title="ATS Optimization Disabled"
+                    description="You have disabled ATS Optimization in your settings. Please enable it to use this tool."
+                    icon={<ShieldAlert className="w-8 h-8 text-yellow-500" />}
+                    isBeta={false}
+                    showResumeBuilderButton={false}
+                />
+            </div>
+        );
+    }
 
     return (
         <div className="pb-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
