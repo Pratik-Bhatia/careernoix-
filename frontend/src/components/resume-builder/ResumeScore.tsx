@@ -30,7 +30,7 @@ export function ResumeScore() {
         icon = CheckCircle2;
         progressBarClass = 'bg-green-500';
     } else if (score >= 60) {
-        feedback = 'Good job! Review AI suggestions to reach a perfect score.';
+        feedback = 'Good job! Review AI project recommendations to reach a perfect score.';
         rating = 'Good';
         colorClass = 'text-yellow-700 bg-yellow-50 border-yellow-200';
         icon = Sparkles;

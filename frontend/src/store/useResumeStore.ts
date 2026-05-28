@@ -78,6 +78,7 @@ export type SyncStatus = 'idle' | 'saving' | 'saved' | 'error';
 interface ResumeStore {
     resumeData: ResumeData;
     syncStatus: SyncStatus;
+    savedProjectRecommendations: string[];
 
     // Actions
     updatePersonalInfo: (info: Partial<PersonalInfo>) => void;
@@ -93,6 +94,10 @@ interface ResumeStore {
     // AI Suggestions Helpers
     addDraftProject: (project: Omit<ProjectEntry, 'id'>) => boolean;
     addDraftSkill: (skill: string) => boolean;
+
+    // Saved Project Recommendations Actions
+    toggleSaveProjectRecommendation: (id: string) => void;
+    isProjectRecommendationSaved: (id: string) => boolean;
 
     // Simple Array lists (Skills, Achievements)
     setSkills: (skills: string[]) => void;
@@ -228,6 +233,18 @@ export const useResumeStore = create<ResumeStore>()(
                 })()
             },
             syncStatus: 'idle' as SyncStatus,
+            savedProjectRecommendations: [],
+
+            toggleSaveProjectRecommendation: (id) => set((state) => {
+                const saved = state.savedProjectRecommendations.includes(id)
+                    ? state.savedProjectRecommendations.filter(x => x !== id)
+                    : [...state.savedProjectRecommendations, id];
+                return { savedProjectRecommendations: saved };
+            }),
+
+            isProjectRecommendationSaved: (id) => {
+                return get().savedProjectRecommendations.includes(id);
+            },
 
             updatePersonalInfo: (info) => set((state) => ({
                 resumeData: {
@@ -355,7 +372,10 @@ export const useResumeStore = create<ResumeStore>()(
         }),
         {
             name: 'careeronix_resume_builder_data',
-            partialize: (state) => ({ resumeData: state.resumeData })
+            partialize: (state) => ({ 
+                resumeData: state.resumeData,
+                savedProjectRecommendations: state.savedProjectRecommendations
+            })
         }
     )
 );

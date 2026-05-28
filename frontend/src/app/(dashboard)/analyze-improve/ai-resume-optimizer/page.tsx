@@ -27,9 +27,10 @@ import { cn } from '@/lib/utils';
 import Link from 'next/link';
 
 export default function AIResumeOptimizerPage() {
-    const { resumeData, hydrateFromBackend } = useResumeStore();
+    const { resumeData, hydrateFromBackend, updatePersonalInfo } = useResumeStore();
     
     // Inputs
+    const [targetRole, setTargetRole] = useState(resumeData.personalInfo.jobTitle || '');
     const [jdText, setJdText] = useState('');
     
     // State
@@ -40,13 +41,30 @@ export default function AIResumeOptimizerPage() {
 
     const handleAnalyze = () => {
         if (!jdText.trim()) return;
+        if (jdText.length > 15000) {
+            alert('Job description is too long (exceeds 15,000 characters). Please paste a shorter job description.');
+            return;
+        }
+        
         setIsAnalyzing(true);
         setHasApplied(false);
         setPreviewTab('optimized');
         
+        // Sync target role directly to global Zustand state
+        updatePersonalInfo({ jobTitle: targetRole });
+        
+        // Build updated resume object inline for the analyzer
+        const updatedResume = {
+            ...resumeData,
+            personalInfo: {
+                ...resumeData.personalInfo,
+                jobTitle: targetRole
+            }
+        };
+
         // Simulate a slight thinking delay for UX
         setTimeout(() => {
-            const analysisResult = optimizeResume(resumeData, jdText);
+            const analysisResult = optimizeResume(updatedResume, jdText, targetRole);
             setResult(analysisResult);
             setIsAnalyzing(false);
         }, 1200);
@@ -61,7 +79,6 @@ export default function AIResumeOptimizerPage() {
 
     const handleDownloadPDF = () => {
         // Trigger the browser's native print-to-PDF dialog.
-        // In a real V2, this would hit a backend puppeteer/pdf-generation service.
         window.print();
     };
 
@@ -104,12 +121,24 @@ export default function AIResumeOptimizerPage() {
                         </Link>
                     </Card>
 
+                    {/* Target Job Role Input */}
+                    <Card className="p-4 border-border shadow-sm flex flex-col gap-2">
+                        <label className="text-xs font-bold text-gray-700 uppercase tracking-wider">Target Job Role</label>
+                        <input
+                            type="text"
+                            className="w-full p-2.5 text-sm border border-border rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all bg-gray-50/50"
+                            placeholder="e.g., Frontend Developer, Data Analyst"
+                            value={targetRole}
+                            onChange={(e) => setTargetRole(e.target.value)}
+                        />
+                    </Card>
+
                     {/* JD Input */}
-                    <Card className="p-4 border-border shadow-sm flex flex-col h-[400px]">
+                    <Card className="p-4 border-border shadow-sm flex flex-col h-[350px]">
                         <div className="flex items-center justify-between mb-2">
                             <label className="text-xs font-bold text-gray-700 uppercase tracking-wider">Job Description</label>
-                            <span className={cn("text-[10px]", jdText.length > 3000 ? "text-red-500" : "text-gray-400")}>
-                                {jdText.length} / 3000
+                            <span className={cn("text-[10px]", jdText.length > 15000 ? "text-red-500" : "text-gray-400")}>
+                                {jdText.length} / 15000
                             </span>
                         </div>
                         <textarea
@@ -122,8 +151,8 @@ export default function AIResumeOptimizerPage() {
 
                     <Button 
                         onClick={handleAnalyze} 
-                        disabled={jdText.trim().length < 50 || isAnalyzing}
-                        className="w-full gap-2 shadow-md"
+                        disabled={!targetRole.trim() || jdText.trim().length < 50 || isAnalyzing}
+                        className="w-full gap-2 shadow-md cursor-pointer"
                     >
                         {isAnalyzing ? (
                             <><Wand2 size={16} className="animate-spin" /> Analyzing...</>

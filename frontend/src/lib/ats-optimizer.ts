@@ -71,11 +71,77 @@ export function analyzeJD(jdText: string): JDKeyword[] {
     return KEYWORD_DB.filter(kw => text.includes(kw.term.toLowerCase()));
 }
 
-export function optimizeResume(resume: ResumeData, jdText: string): OptimizationResult {
-    // 1. Analyze JD
-    const jdKeywords = analyzeJD(jdText);
+export function getRoleKeywords(role: string): JDKeyword[] {
+    const roleLower = role.toLowerCase();
+    const keywords: JDKeyword[] = [];
     
-    if (jdKeywords.length === 0) {
+    if (roleLower.includes('data') || roleLower.includes('analyst') || roleLower.includes('analytics')) {
+        keywords.push(
+            { term: 'Python', category: 'Technical Skills' },
+            { term: 'SQL', category: 'Technical Skills' },
+            { term: 'Data Analysis', category: 'Technical Skills' },
+            { term: 'ETL', category: 'Technical Skills' },
+            { term: 'Power BI', category: 'Tools & Frameworks' },
+            { term: 'Tableau', category: 'Tools & Frameworks' },
+            { term: 'KPI Reporting', category: 'Business & Soft Skills' }
+        );
+    }
+    if (roleLower.includes('front') || roleLower.includes('ui') || roleLower.includes('web') || roleLower.includes('designer')) {
+        keywords.push(
+            { term: 'JavaScript', category: 'Technical Skills' },
+            { term: 'TypeScript', category: 'Technical Skills' },
+            { term: 'React', category: 'Tools & Frameworks' },
+            { term: 'Git', category: 'Tools & Frameworks' },
+            { term: 'Figma', category: 'Tools & Frameworks' },
+            { term: 'Agile', category: 'Business & Soft Skills' }
+        );
+    }
+    if (roleLower.includes('back') || roleLower.includes('server') || roleLower.includes('api') || roleLower.includes('cloud')) {
+        keywords.push(
+            { term: 'Python', category: 'Technical Skills' },
+            { term: 'REST API', category: 'Technical Skills' },
+            { term: 'System Design', category: 'Technical Skills' },
+            { term: 'Node.js', category: 'Tools & Frameworks' },
+            { term: 'Docker', category: 'Tools & Frameworks' },
+            { term: 'AWS', category: 'Tools & Frameworks' },
+            { term: 'Git', category: 'Tools & Frameworks' }
+        );
+    }
+    if (roleLower.includes('full stack') || roleLower.includes('engineer') || roleLower.includes('developer') || roleLower.includes('software')) {
+        keywords.push(
+            { term: 'JavaScript', category: 'Technical Skills' },
+            { term: 'TypeScript', category: 'Technical Skills' },
+            { term: 'SQL', category: 'Technical Skills' },
+            { term: 'REST API', category: 'Technical Skills' },
+            { term: 'React', category: 'Tools & Frameworks' },
+            { term: 'Node.js', category: 'Tools & Frameworks' },
+            { term: 'Docker', category: 'Tools & Frameworks' },
+            { term: 'Git', category: 'Tools & Frameworks' },
+            { term: 'Agile', category: 'Business & Soft Skills' }
+        );
+    }
+    if (roleLower.includes('manager') || roleLower.includes('lead') || roleLower.includes('pm')) {
+        keywords.push(
+            { term: 'Agile', category: 'Business & Soft Skills' },
+            { term: 'Project Management', category: 'Business & Soft Skills' },
+            { term: 'Leadership', category: 'Business & Soft Skills' },
+            { term: 'Cross-functional', category: 'Business & Soft Skills' },
+            { term: 'Stakeholder Management', category: 'Business & Soft Skills' }
+        );
+    }
+    
+    return keywords;
+}
+
+export function optimizeResume(resume: ResumeData, jdText: string, targetRole?: string): OptimizationResult {
+    // 1. Analyze JD & Role Keywords
+    const jdKeywords = analyzeJD(jdText);
+    const roleKeywords = getRoleKeywords(targetRole || resume.personalInfo.jobTitle || '');
+    
+    // Combine unique keywords by term
+    const combinedKeywords = [...new Map([...jdKeywords, ...roleKeywords].map(item => [item.term.toLowerCase(), item])).values()];
+    
+    if (combinedKeywords.length === 0) {
         // Fallback if no keywords matched
         return {
             matchScore: 30,
@@ -101,7 +167,7 @@ export function optimizeResume(resume: ResumeData, jdText: string): Optimization
     const matched: string[] = [];
     const missing: JDKeyword[] = [];
     
-    jdKeywords.forEach(kw => {
+    combinedKeywords.forEach(kw => {
         if (resumeText.includes(kw.term.toLowerCase())) {
             matched.push(kw.term);
         } else {
@@ -117,7 +183,7 @@ export function optimizeResume(resume: ResumeData, jdText: string): Optimization
     if (resume.skills?.length > 4) baseScore += 10;
     
     // Keyword match score (max 60)
-    const keywordMatchPercent = jdKeywords.length > 0 ? (matched.length / jdKeywords.length) : 0;
+    const keywordMatchPercent = combinedKeywords.length > 0 ? (matched.length / combinedKeywords.length) : 0;
     const keywordScore = Math.round(keywordMatchPercent * 60);
     
     let matchScore = baseScore + keywordScore;

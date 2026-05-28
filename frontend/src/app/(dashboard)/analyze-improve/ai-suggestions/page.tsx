@@ -30,11 +30,11 @@ import { cn } from '@/lib/utils';
 import Link from 'next/link';
 
 export default function AISuggestionsPage() {
-    const { resumeData, getOverallProgress } = useResumeStore();
+    const { resumeData, getOverallProgress, savedProjectRecommendations } = useResumeStore();
     const progress = getOverallProgress();
     
     // UI State
-    const [activeTab, setActiveTab] = useState<FilterCategory>('All');
+    const [activeTab, setActiveTab] = useState<FilterCategory | 'Saved'>('All');
     const [isRegenerating, setIsRegenerating] = useState(false);
     
     // Modal State
@@ -55,7 +55,12 @@ export default function AISuggestionsPage() {
     };
 
     // Filter logic for projects
-    const filteredProjects = filterProjects(recommendedProjects, activeTab, resumeData.skills);
+    const filteredProjects = useMemo(() => {
+        if (activeTab === 'Saved') {
+            return recommendedProjects.filter(p => savedProjectRecommendations.includes(p.id));
+        }
+        return filterProjects(recommendedProjects, activeTab, resumeData.skills);
+    }, [recommendedProjects, activeTab, resumeData.skills, savedProjectRecommendations]);
 
     // Empty state for brand new resumes
     if (progress < 15 && resumeData.experience.length === 0) {
@@ -72,8 +77,9 @@ export default function AISuggestionsPage() {
         );
     }
 
-    const tabs: FilterCategory[] = [
+    const tabs: Array<FilterCategory | 'Saved'> = [
         'All', 
+        'Saved',
         'Based On Your Skills', 
         'High Impact', 
         'Beginner Friendly', 

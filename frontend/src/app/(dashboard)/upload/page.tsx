@@ -53,9 +53,9 @@ export default function UploadPage() {
             // Short delay to show 100%
             setTimeout(() => {
                 setUploadSuccess(true);
-                // Redirect to dashboard after success animation
+                // Redirect to resume score after success animation
                 setTimeout(() => {
-                    router.push('/dashboard');
+                    router.push('/analyze-improve/resume-score');
                 }, 2000);
             }, 500);
 
@@ -80,7 +80,7 @@ export default function UploadPage() {
                     </div>
                     <h2 className="text-3xl font-bold text-gray-900 mb-2">Analysis Complete!</h2>
                     <p className="text-gray-500 mb-8 text-lg">
-                        Redirecting to your dashboard...
+                        Redirecting to your resume score analysis...
                     </p>
                     <div className="w-full bg-gray-100 h-2 rounded-full overflow-hidden">
                         <div className="h-full bg-green-500 animate-[progress_1.5s_ease-in-out_infinite]" style={{ width: '100%' }}></div>

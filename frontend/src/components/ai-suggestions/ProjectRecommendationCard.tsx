@@ -11,7 +11,8 @@ import {
     Plus,
     Target,
     Zap,
-    BookOpen
+    BookOpen,
+    Bookmark
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -21,8 +22,9 @@ interface ProjectRecommendationCardProps {
 }
 
 export function ProjectRecommendationCard({ project, onViewDetails }: ProjectRecommendationCardProps) {
-    const { addDraftProject } = useResumeStore();
+    const { addDraftProject, toggleSaveProjectRecommendation, savedProjectRecommendations } = useResumeStore();
     const [actionState, setActionState] = useState<'idle' | 'success' | 'duplicate'>('idle');
+    const isSaved = savedProjectRecommendations.includes(project.id);
 
     const handleAddProject = () => {
         const success = addDraftProject(project.draftProject);
@@ -55,7 +57,7 @@ export function ProjectRecommendationCard({ project, onViewDetails }: ProjectRec
     return (
         <Card className="p-6 flex flex-col gap-4 hover:shadow-md transition-all border-l-4" style={{ borderLeftColor: 'var(--primary)' }}>
             <div className="flex items-start justify-between gap-4">
-                <div className="flex gap-4">
+                <div className="flex gap-4 flex-1">
                     <div className="p-3 bg-gray-50 rounded-xl flex-shrink-0 border border-border mt-1">
                         <FolderPlus className="text-primary" size={24} />
                     </div>
@@ -71,6 +73,19 @@ export function ProjectRecommendationCard({ project, onViewDetails }: ProjectRec
                         </div>
                     </div>
                 </div>
+                
+                <button
+                    onClick={() => toggleSaveProjectRecommendation(project.id)}
+                    className={cn(
+                        "p-2 rounded-lg border transition-all cursor-pointer flex-shrink-0",
+                        isSaved 
+                            ? "bg-blue-50 text-blue-600 border-blue-200" 
+                            : "bg-white text-gray-400 border-border hover:bg-gray-50 hover:text-gray-600"
+                    )}
+                    title={isSaved ? "Saved" : "Save for later"}
+                >
+                    <Bookmark size={16} className={cn(isSaved && "fill-current")} />
+                </button>
             </div>
             
             <p className="text-sm text-text-secondary leading-relaxed">

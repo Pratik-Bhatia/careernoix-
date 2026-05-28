@@ -25,6 +25,7 @@ import {
     ShieldAlert
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { ImprovementActionButton } from '@/components/resume-score/ImprovementActionButton';
 
 export default function ResumeScorePage() {
     const { resumeData, getOverallProgress } = useResumeStore();
@@ -155,17 +156,17 @@ export default function ResumeScorePage() {
                         </h3>
                         <div className="space-y-3">
                             {suggestions.map((suggestion, idx) => (
-                                <Card key={idx} className="p-4 hover:shadow-md transition-shadow group cursor-pointer border-l-4 border-l-primary">
+                                <Card key={idx} className="p-4 hover:shadow-md transition-shadow group border-l-4 border-l-primary">
                                     <div className="flex items-start justify-between gap-4">
-                                        <div>
+                                        <div className="flex-1">
                                             <h4 className="text-base font-bold text-text-primary mb-1">{suggestion.title}</h4>
                                             <p className="text-sm text-text-secondary leading-relaxed">{suggestion.description}</p>
+                                            <ImprovementActionButton title={suggestion.title} />
                                         </div>
                                         <div className="flex flex-col items-end gap-2 flex-shrink-0">
                                             <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-green-50 text-green-700 border border-green-100">
                                                 {suggestion.impact}
                                             </span>
-                                            <ChevronRight size={16} className="text-gray-400 group-hover:text-primary transition-colors mt-2" />
                                         </div>
                                     </div>
                                 </Card>

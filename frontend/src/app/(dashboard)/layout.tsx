@@ -15,7 +15,8 @@ import {
     Folder,
     ChevronDown,
     ChevronUp,
-    Sparkles
+    Sparkles,
+    Compass
 } from 'lucide-react';
 import { useStore } from '@/store/useStore';
 import { cn } from '@/lib/utils';
@@ -42,6 +43,7 @@ export default function DashboardLayout({
     const navItems = [
         { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
         { name: 'Upload Resume', href: '/upload', icon: Upload },
+        { name: 'Career Guidance', href: '/career-guidance', icon: Compass },
     ];
 
     const resumeBuilderChildren = [
@@ -58,7 +60,7 @@ export default function DashboardLayout({
 
     const analyzeImproveChildren = [
         { name: 'Resume Score', href: '/analyze-improve/resume-score' },
-        { name: 'AI Suggestions', href: '/analyze-improve/ai-suggestions' },
+        { name: 'AI Project Recommendations', href: '/analyze-improve/ai-suggestions' },
         { name: 'AI Resume Optimizer', href: '/analyze-improve/ai-resume-optimizer' },
     ];
 
@@ -266,14 +268,14 @@ export default function DashboardLayout({
             {/* Main Content */}
             <div className="flex-1 flex flex-col h-full overflow-hidden relative">
                 {/* Mobile Header */}
-                <header className="h-16 lg:hidden flex-shrink-0 flex items-center justify-between px-4 bg-surface border-b border-border sticky top-0 z-30">
-                    <span className="text-lg font-bold text-text-primary">SmartMatch</span>
+                <header className="h-16 lg:hidden flex-shrink-0 flex items-center px-4 bg-surface border-b border-border sticky top-0 z-30 gap-2">
                     <button
                         onClick={() => setSidebarOpen(true)}
-                        className="p-2 -mr-2 text-text-primary rounded-lg hover:bg-gray-100"
+                        className="p-2 -ml-2 text-text-primary rounded-lg hover:bg-gray-100"
                     >
                         <Menu size={24} />
                     </button>
+                    <span className="text-lg font-bold text-text-primary">SmartMatch</span>
                 </header>
 
                 {/* Page Content */}

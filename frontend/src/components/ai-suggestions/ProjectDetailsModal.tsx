@@ -26,8 +26,9 @@ interface ProjectDetailsModalProps {
 }
 
 export function ProjectDetailsModal({ project, isOpen, onClose }: ProjectDetailsModalProps) {
-    const { addDraftProject } = useResumeStore();
+    const { addDraftProject, toggleSaveProjectRecommendation, savedProjectRecommendations } = useResumeStore();
     const [actionState, setActionState] = useState<'idle' | 'success' | 'duplicate'>('idle');
+    const isSaved = project ? savedProjectRecommendations.includes(project.id) : false;
 
     // Reset action state when a new project is selected or modal is closed
     useEffect(() => {
@@ -196,8 +197,13 @@ export function ProjectDetailsModal({ project, isOpen, onClose }: ProjectDetails
                     </Button>
                     
                     <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto order-1 sm:order-2">
-                        <Button variant="outline" className="w-full sm:w-auto gap-2">
-                            <Bookmark size={16} /> Save For Later
+                        <Button 
+                            variant={isSaved ? "primary" : "outline"} 
+                            className={cn("w-full sm:w-auto gap-2", isSaved && "bg-blue-600 hover:bg-blue-700 text-white border-transparent")}
+                            onClick={() => toggleSaveProjectRecommendation(project.id)}
+                        >
+                            <Bookmark size={16} className={cn(isSaved && "fill-current")} />
+                            {isSaved ? 'Saved' : 'Save For Later'}
                         </Button>
                         <Button 
                             variant={actionState === 'idle' ? 'primary' : 'outline'}

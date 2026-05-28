@@ -56,7 +56,10 @@ export function PreviewPanel({ children, className, baseWidth = 794 }: PreviewPa
                     }}
                 >
                     {/* The Paper Document */}
-                    <div className="w-full min-h-[1122px] bg-white shadow-md p-10 antialiased subpixel-antialiased">
+                    <div 
+                        id="resume-print-area" 
+                        className="w-full min-h-[1122px] bg-white shadow-md p-10 antialiased subpixel-antialiased print:p-0 print:shadow-none print:min-h-0 print:w-full"
+                    >
                         {children}
                     </div>
                 </div>

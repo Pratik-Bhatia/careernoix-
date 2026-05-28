@@ -10,12 +10,20 @@ import { fetchDashboardData } from '@/lib/api';
 import type { DashboardData } from '@/lib/api';
 import { Button } from '@/components/ui/Button';
 import Link from 'next/link';
+import { useResumeStore } from '@/store/useResumeStore';
+import { getCareerPathSuggestions } from '@/lib/career-guidance';
+import { Card } from '@/components/ui/Card';
+import { ArrowRight, ChevronRight } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 export default function Dashboard() {
     const { token, user, setDashboardData, dashboardData } = useStore();
+    const { resumeData } = useResumeStore();
     const router = useRouter();
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+
+    const careerSuggestions = getCareerPathSuggestions(resumeData);
 
     useEffect(() => {
         if (!token) {
@@ -156,15 +164,22 @@ export default function Dashboard() {
                     <h3 className="text-xl font-bold text-text-primary mb-2">
                         No matches found yet
                     </h3>
-                    <p className="text-text-secondary mb-6 max-w-md mx-auto">
-                        Upload your resume and run a job match analysis to see your personalized dashboard with real scores and recommendations.
+                    <p className="text-text-secondary mb-6 max-w-md mx-auto text-sm leading-relaxed">
+                        Upload your resume or build one from scratch to get started with job matching, score calculations, and smart optimization.
                     </p>
-                    <Link href="/upload">
-                        <Button size="lg" className="px-8">
-                            <Upload className="w-4 h-4 mr-2" />
-                            Upload Resume
-                        </Button>
-                    </Link>
+                    <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                        <Link href="/upload">
+                            <Button size="lg" className="px-8 w-full sm:w-auto cursor-pointer">
+                                <Upload className="w-4 h-4 mr-2" />
+                                Upload Resume
+                            </Button>
+                        </Link>
+                        <Link href="/resume-builder/personal-info">
+                            <Button size="lg" variant="outline" className="px-8 w-full sm:w-auto bg-white cursor-pointer border-primary/20 text-primary hover:bg-primary/5">
+                                Build Resume From Scratch
+                            </Button>
+                        </Link>
+                    </div>
                 </section>
             ) : (
                 /* State B: Data Ready — Real Matches */
@@ -186,6 +201,84 @@ export default function Dashboard() {
                                 skills={match.details?.matched_skills}
                                 missingSkills={match.details?.missing_skills}
                             />
+                        ))}
+                    </div>
+                </section>
+            )}
+
+            {/* Career Paths You Can Pursue */}
+            {!loading && (
+                <section className="space-y-6 pt-6 border-t border-border">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div>
+                            <h2 className="text-xl font-bold text-gray-900">Career Paths You Can Pursue</h2>
+                            <p className="text-sm text-text-secondary mt-0.5">Personalized recommendations based on your resume profile and skills.</p>
+                        </div>
+                        <Link href="/career-guidance" className="text-sm text-primary font-semibold hover:underline flex items-center gap-1 group">
+                            Explore Career Guidance
+                            <ArrowRight size={14} className="transition-transform group-hover:translate-x-0.5" />
+                        </Link>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {careerSuggestions.map((path, idx) => (
+                            <Card key={idx} className="p-5 flex flex-col justify-between hover:shadow-md transition-all border-t-4 border-t-primary/70">
+                                <div>
+                                    <div className="flex items-start justify-between gap-2 mb-3">
+                                        <h3 className="font-bold text-text-primary text-base">{path.title}</h3>
+                                        <span className={cn(
+                                            "inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase",
+                                            path.type === 'Core Path' 
+                                                ? "bg-green-50 text-green-700 border border-green-100"
+                                                : path.type === 'Eligible Path'
+                                                    ? "bg-blue-50 text-blue-700 border border-blue-100"
+                                                    : "bg-purple-50 text-purple-700 border border-purple-100"
+                                        )}>
+                                            {path.type}
+                                        </span>
+                                    </div>
+                                    <p className="text-xs text-text-secondary mb-4 leading-relaxed">{path.reason}</p>
+                                    
+                                    <div className="flex items-center justify-between text-xs mb-3 bg-gray-50 p-2 rounded-lg border border-border/50">
+                                        <span className="text-text-placeholder">Est. Salary:</span>
+                                        <span className="font-bold text-text-primary">{path.averageSalary}</span>
+                                    </div>
+                                    
+                                    {path.matchingSkills.length > 0 && (
+                                        <div className="mb-3">
+                                            <span className="block text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-1">Your Matching Skills</span>
+                                            <div className="flex flex-wrap gap-1">
+                                                {path.matchingSkills.slice(0, 4).map(skill => (
+                                                    <span key={skill} className="px-1.5 py-0.5 bg-green-50 text-green-700 rounded text-[10px] font-medium">
+                                                        {skill}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                                <div className="pt-4 border-t border-border/50 mt-4 flex items-center justify-between">
+                                    <div className="flex items-center gap-1.5">
+                                        <div className="w-12 h-2 bg-gray-100 rounded-full overflow-hidden">
+                                            <div 
+                                                className={cn(
+                                                    "h-full rounded-full",
+                                                    path.matchPercentage >= 70 ? "bg-green-500" : path.matchPercentage >= 40 ? "bg-blue-500" : "bg-purple-500"
+                                                )}
+                                                style={{ width: `${path.matchPercentage}%` }}
+                                            />
+                                        </div>
+                                        <span className="text-[10px] font-bold text-text-secondary">{path.matchPercentage}% match</span>
+                                    </div>
+                                    
+                                    <Link href={`/career-guidance?role=${encodeURIComponent(path.title)}`}>
+                                        <Button size="sm" variant="ghost" className="text-xs font-semibold gap-1 text-primary hover:text-primary-hover hover:bg-primary-light">
+                                            Roadmap
+                                            <ChevronRight size={12} />
+                                        </Button>
+                                    </Link>
+                                </div>
+                            </Card>
                         ))}
                     </div>
                 </section>

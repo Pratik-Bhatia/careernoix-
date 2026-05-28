@@ -61,3 +61,47 @@ body {
   font-family: var(--font-geist-sans), system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
+
+@media print {
+  /* Hide all elements on the screen except the resume print container */
+  body * {
+    visibility: hidden;
+  }
+  
+  #resume-print-area,
+  #resume-print-area * {
+    visibility: visible;
+  }
+  
+  /* Reset document flow and force print container to fill page */
+  #resume-print-area {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    border: none !important;
+    background: white !important;
+  }
+
+  @page {
+    size: letter;
+    margin: 0.6in 0.6in 0.6in 0.6in;
+  }
+
+  /* Reset layout constraints for correct pagination */
+  html, body, main, #__next, [data-nextjs-scroll-focus-boundary] {
+    height: auto !important;
+    min-height: auto !important;
+    overflow: visible !important;
+    background: white !important;
+  }
+
+  /* Prevent page-break issues inside content blocks */
+  h2, h3, .flex, .grid, li, p {
+    page-break-inside: avoid;
+  }
+}
