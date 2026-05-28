@@ -3,9 +3,50 @@ from app.core.config import settings
 from app.api.api import api_router
 from app.db.base import Base
 from app.db.session import engine
+from sqlalchemy import text
+import logging
 
-# Create tables on startup
+logger = logging.getLogger(__name__)
+
+
+def safe_migrate_schema() -> None:
+    """
+    Idempotent schema migration for production.
+
+    SQLAlchemy's create_all() creates *missing* tables but never ALTERs
+    existing ones.  When we add new columns to an existing model (e.g. phone,
+    profile_image_url, deleted_at on the users table) those columns must be
+    added manually.  This function runs ADD COLUMN IF NOT EXISTS statements so
+    it is always safe to call on startup — it is a no-op when the columns
+    already exist.
+    """
+    migrations = [
+        # users table — new columns added in the settings module
+        "ALTER TABLE users ADD COLUMN IF NOT EXISTS phone VARCHAR",
+        "ALTER TABLE users ADD COLUMN IF NOT EXISTS profile_image_url VARCHAR",
+        "ALTER TABLE users ADD COLUMN IF NOT EXISTS deleted_at TIMESTAMP WITH TIME ZONE",
+    ]
+
+    with engine.connect() as conn:
+        for stmt in migrations:
+            try:
+                conn.execute(text(stmt))
+                logger.info("Migration OK: %s", stmt)
+            except Exception as exc:
+                # Log but don't crash — the column may already exist in some DBs
+                logger.warning("Migration skipped (%s): %s", exc, stmt)
+        conn.commit()
+
+
+# 1. Create any completely missing tables (user_settings, resume_builder_data, etc.)
 Base.metadata.create_all(bind=engine)
+
+# 2. Patch existing tables with new columns added since the last deploy
+try:
+    safe_migrate_schema()
+except Exception as exc:
+    logger.error("safe_migrate_schema failed: %s", exc)
+
 
 from fastapi.middleware.cors import CORSMiddleware
 
