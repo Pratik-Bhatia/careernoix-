@@ -8,6 +8,7 @@ import Dropzone from '@/components/upload/Dropzone';
 import { FileText, CheckCircle2, TrendingUp, ShieldCheck } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
+import { useResumeStore } from '@/store/useResumeStore';
 
 export default function UploadPage() {
     const [isUploading, setIsUploading] = useState(false);
@@ -15,6 +16,7 @@ export default function UploadPage() {
     const [error, setError] = useState<string | null>(null);
     const [uploadSuccess, setUploadSuccess] = useState(false);
     const { token, setResumeUploaded } = useStore();
+    const { hydrateFromBackend } = useResumeStore();
     const router = useRouter();
 
     const handleFileSelect = async (file: File) => {
@@ -40,15 +42,21 @@ export default function UploadPage() {
         }, 200);
 
         try {
-            await apiClient.post('/resume/upload', formData, {
+            const response = await apiClient.post('/resume/upload', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
             });
 
+            const parsedData = response.data?.parsed_data;
+
             clearInterval(progressInterval);
             setUploadProgress(100);
             setResumeUploaded(true);
+
+            if (parsedData) {
+                hydrateFromBackend(parsedData);
+            }
 
             // Short delay to show 100%
             setTimeout(() => {

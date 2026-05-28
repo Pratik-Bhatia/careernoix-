@@ -2,7 +2,7 @@ from typing import Any, List
 from fastapi import APIRouter, Depends, UploadFile, File, HTTPException
 from sqlalchemy.orm import Session
 from app.api import deps
-from app.models.all_models import Resume, User, JobRole, MatchResult
+from app.models.all_models import Resume, User, JobRole, MatchResult, ResumeBuilderData
 from app.services.resume_parser import extract_text_from_pdf, parse_resume
 from app.services.matching import calculate_match
 from app.core import security
@@ -66,6 +66,18 @@ async def upload_resume(
             parsed_skills=resume_skills
         )
         db.add(new_resume)
+
+    # Save parsed data to ResumeBuilderData so it updates the frontend builder
+    builder_record = db.query(ResumeBuilderData).filter(ResumeBuilderData.user_id == current_user_id).first()
+    if builder_record:
+        builder_record.data = parsed_data
+        db.add(builder_record)
+    else:
+        builder_record = ResumeBuilderData(
+            user_id=current_user_id,
+            data=parsed_data
+        )
+        db.add(builder_record)
     
     db.commit()
     stages.append("parsed_json_saved")

@@ -18,7 +18,7 @@ import { cn } from '@/lib/utils';
 
 export default function Dashboard() {
     const { token, user, setDashboardData, dashboardData } = useStore();
-    const { resumeData } = useResumeStore();
+    const { resumeData, resetResume } = useResumeStore();
     const router = useRouter();
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -174,7 +174,7 @@ export default function Dashboard() {
                                 Upload Resume
                             </Button>
                         </Link>
-                        <Link href="/resume-builder/personal-info">
+                        <Link href="/resume-builder/personal-info" onClick={() => resetResume()}>
                             <Button size="lg" variant="outline" className="px-8 w-full sm:w-auto bg-white cursor-pointer border-primary/20 text-primary hover:bg-primary/5">
                                 Build Resume From Scratch
                             </Button>

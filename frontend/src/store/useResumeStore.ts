@@ -45,6 +45,7 @@ export interface ProjectEntry {
     current: boolean;
     description: string;
     link: string;
+    isDraft?: boolean;
 }
 
 export interface CertificationEntry {
@@ -106,6 +107,7 @@ interface ResumeStore {
     // Sync actions
     hydrateFromBackend: (data: ResumeData) => void;
     setSyncStatus: (status: SyncStatus) => void;
+    resetResume: () => void;
 
     // Helpers
     getSectionCompletion: (section: keyof ResumeData) => number;
@@ -210,6 +212,29 @@ const initialData: ResumeData = {
     languages: initialLanguages
 };
 
+const emptyPersonalInfo: PersonalInfo = {
+    fullName: '',
+    email: '',
+    phone: '',
+    location: '',
+    jobTitle: '',
+    website: '',
+    linkedin: '',
+    github: ''
+};
+
+const emptyData: ResumeData = {
+    personalInfo: emptyPersonalInfo,
+    summary: '',
+    experience: [],
+    education: [],
+    skills: [],
+    projects: [],
+    certifications: [],
+    achievements: [],
+    languages: []
+};
+
 // Helper function to safely read from localStorage
 const getLocalStorageItem = (key: string): any | null => {
     if (typeof window === 'undefined') return null;
@@ -289,7 +314,8 @@ export const useResumeStore = create<ResumeStore>()(
                 }
                 const newProject: ProjectEntry = {
                     ...project,
-                    id: `proj-${Date.now()}`
+                    id: `proj-${Date.now()}`,
+                    isDraft: true
                 };
                 set((state) => ({
                     resumeData: {
@@ -322,6 +348,8 @@ export const useResumeStore = create<ResumeStore>()(
             hydrateFromBackend: (data: ResumeData) => set({ resumeData: data }),
 
             setSyncStatus: (status: SyncStatus) => set({ syncStatus: status }),
+
+            resetResume: () => set({ resumeData: emptyData, savedProjectRecommendations: [] }),
 
             getSectionCompletion: (section) => {
                 const data = get().resumeData[section];

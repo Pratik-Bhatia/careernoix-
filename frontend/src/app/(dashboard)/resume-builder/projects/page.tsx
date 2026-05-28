@@ -5,7 +5,7 @@ import { useResumeStore, type ProjectEntry } from '@/store/useResumeStore';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, ArrowRight, Plus, FolderGit, Edit3, Trash2, CalendarDays, Globe, Save, X } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Plus, FolderGit, Edit3, Trash2, CalendarDays, Globe, Save, X, Check } from 'lucide-react';
 
 type ProjectForm = Omit<ProjectEntry, 'id'>;
 
@@ -68,6 +68,10 @@ export default function ProjectsPage() {
     const deleteEntry = (id: string) => {
         setProjects(entries.filter((entry) => entry.id !== id));
         if (editingId === id) resetEditor();
+    };
+
+    const markAsComplete = (id: string) => {
+        setProjects(entries.map((entry) => entry.id === id ? { ...entry, isDraft: false } : entry));
     };
 
     return (
@@ -187,9 +191,14 @@ export default function ProjectsPage() {
                         {entries.map((entry) => (
                             <div key={entry.id} className="flex justify-between items-start p-4 rounded-xl border border-border bg-surface hover:border-primary/20 transition-all">
                                 <div className="space-y-1">
-                                    <h3 className="font-bold text-text-primary text-base">
+                                    <h3 className="font-bold text-text-primary text-base flex items-center gap-2">
                                         {entry.name}
                                         {entry.role && <span className="font-normal text-text-secondary text-sm"> - {entry.role}</span>}
+                                        {entry.isDraft && (
+                                            <span className="inline-flex items-center rounded-full bg-purple-50 px-2 py-0.5 text-xs font-semibold text-purple-700 border border-purple-200">
+                                                AI Draft
+                                            </span>
+                                        )}
                                     </h3>
                                     {entry.link && (
                                         <a href={entry.link} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-xs text-primary hover:underline">
@@ -210,6 +219,16 @@ export default function ProjectsPage() {
                                     )}
                                 </div>
                                 <div className="flex items-center gap-1">
+                                    {entry.isDraft && (
+                                        <button
+                                            onClick={() => markAsComplete(entry.id)}
+                                            className="p-2 text-green-600 hover:text-green-700 hover:bg-green-50 rounded-lg transition-colors flex items-center gap-1 text-xs font-medium"
+                                            aria-label="Mark as complete"
+                                            title="Mark as complete"
+                                        >
+                                            <Check size={16} />
+                                        </button>
+                                    )}
                                     <button
                                         onClick={() => editEntry(entry)}
                                         className="p-2 text-text-placeholder hover:text-primary hover:bg-gray-50 rounded-lg transition-colors"
