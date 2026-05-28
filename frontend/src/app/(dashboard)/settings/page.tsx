@@ -12,7 +12,7 @@ import { useRouter } from 'next/navigation';
 
 export default function SettingsPage() {
     const { settings, fetchSettings, updateSettings, updateProfile, isLoading, hasLoaded, clearSettings } = useSettingsStore();
-    const { user, logout } = useStore();
+    const { user, logout, refreshUser } = useStore();
     const router = useRouter();
 
     const [profileForm, setProfileForm] = useState<UserProfile>({
@@ -56,6 +56,9 @@ export default function SettingsPage() {
         setIsSaving(true);
         try {
             await updateProfile(profileForm);
+            // Sync updated name/phone back into the global auth store
+            // so the sidebar user card reflects the changes immediately
+            await refreshUser();
             showToast('Account information saved');
         } catch (error) {
             showToast('Failed to save account information', 'error');

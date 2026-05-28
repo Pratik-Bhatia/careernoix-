@@ -24,31 +24,6 @@ export interface JobRole {
     required_skills: string[];
 }
 
-export const fetchUserSettings = async () => {
-    const response = await apiClient.get('/users/me/settings');
-    return response.data;
-};
-
-export const updateUserSettings = async (data: any) => {
-    const response = await apiClient.put('/users/me/settings', data);
-    return response.data;
-};
-
-export const updateUserProfile = async (data: any) => {
-    const response = await apiClient.put('/users/me/profile', data);
-    return response.data;
-};
-
-export const changePassword = async (data: any) => {
-    const response = await apiClient.post('/users/me/password', data);
-    return response.data;
-};
-
-export const deleteAccount = async () => {
-    const response = await apiClient.delete('/users/me');
-    return response.data;
-};
-
 export interface DashboardData {
     matches: MatchResult[];
     jobRoles: JobRole[];
@@ -83,6 +58,37 @@ apiClient.interceptors.response.use(
         return Promise.reject(error);
     }
 );
+
+// ─── User / Settings API ─────────────────────────────────
+export const fetchUserSettings = async () => {
+    const response = await apiClient.get('/users/me/settings');
+    return response.data;
+};
+
+export const updateUserSettings = async (data: any) => {
+    const response = await apiClient.put('/users/me/settings', data);
+    return response.data;
+};
+
+export const updateUserProfile = async (data: any) => {
+    const response = await apiClient.put('/users/me/profile', data);
+    return response.data;
+};
+
+export const changePassword = async (data: any) => {
+    const response = await apiClient.post('/users/me/password', data);
+    return response.data;
+};
+
+export const deleteAccount = async () => {
+    const response = await apiClient.delete('/users/me');
+    return response.data;
+};
+
+export const fetchCurrentUser = async () => {
+    const response = await apiClient.get('/users/me');
+    return response.data;
+};
 
 // ─── Dashboard Data Fetching ────────────────────────────
 /**
