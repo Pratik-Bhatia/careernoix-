@@ -105,6 +105,23 @@ export default function AIResumeOptimizerPage() {
         );
     }
 
+    const progress = getOverallProgress();
+
+    // Empty state for brand new resumes
+    if (hasLoaded && progress < 15 && resumeData.experience.length === 0) {
+        return (
+            <div className="h-full flex items-center justify-center pt-10">
+                <FeaturePlaceholder 
+                    title="Upload Resume Required"
+                    description="Upload a resume and provide a job description to begin ATS optimization."
+                    icon={<ShieldAlert className="w-8 h-8 text-yellow-500" />}
+                    isBeta={false}
+                    showResumeBuilderButton={true}
+                />
+            </div>
+        );
+    }
+
     return (
         <div className="pb-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
             {/* Header */}

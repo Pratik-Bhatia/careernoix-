@@ -3,6 +3,7 @@
 import React, { useState, useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { getCareerGuidance, CareerGuide } from '@/lib/career-guidance';
+import { useResumeStore } from '@/store/useResumeStore';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { 
@@ -20,14 +21,18 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
+import { FeaturePlaceholder } from '@/components/ui/FeaturePlaceholder';
 
 function CareerGuidanceInner() {
     const searchParams = useSearchParams();
     const router = useRouter();
     const roleParam = searchParams.get('role');
+    const { getOverallProgress, resumeData } = useResumeStore();
+    const progress = getOverallProgress();
 
     const [query, setQuery] = useState('');
     const [guide, setGuide] = useState<CareerGuide | null>(null);
+    const [error, setError] = useState<string | null>(null);
 
     const popularQueries = [
         'Data Analyst',
@@ -38,25 +43,49 @@ function CareerGuidanceInner() {
     ];
 
     useEffect(() => {
-        // Default to 'Data Analyst' if no param is provided, to ensure a rich immediate display
-        const target = roleParam || 'Data Analyst';
-        setQuery(target);
-        setGuide(getCareerGuidance(target));
-    }, [roleParam]);
+        // If the user hasn't started their resume at all, do not auto-generate guidance
+        if (progress === 0 && resumeData.experience.length === 0 && !roleParam) {
+            return;
+        }
+
+        // Default to 'Data Analyst' or job title if no param is provided, to ensure a rich immediate display
+        const defaultRole = resumeData.personalInfo?.jobTitle || 'Data Analyst';
+        const target = roleParam || defaultRole;
+        try {
+            setError(null);
+            setQuery(target);
+            setGuide(getCareerGuidance(target));
+        } catch (err) {
+            console.error(err);
+            setError("Unable to generate guidance.");
+        }
+    }, [roleParam, progress, resumeData]);
 
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
         if (query.trim()) {
-            setGuide(getCareerGuidance(query));
-            // Update URL search param without reloading, to support shareable links
-            router.push(`/career-guidance?role=${encodeURIComponent(query.trim())}`, { scroll: false });
+            try {
+                setError(null);
+                setGuide(getCareerGuidance(query));
+                // Update URL search param without reloading, to support shareable links
+                router.push(`/career-guidance?role=${encodeURIComponent(query.trim())}`, { scroll: false });
+            } catch (err) {
+                console.error(err);
+                setError("Unable to generate guidance.");
+            }
         }
     };
 
     const handleSuggestionClick = (suggestion: string) => {
-        setQuery(suggestion);
-        setGuide(getCareerGuidance(suggestion));
-        router.push(`/career-guidance?role=${encodeURIComponent(suggestion)}`, { scroll: false });
+        try {
+            setError(null);
+            setQuery(suggestion);
+            setGuide(getCareerGuidance(suggestion));
+            router.push(`/career-guidance?role=${encodeURIComponent(suggestion)}`, { scroll: false });
+        } catch (err) {
+            console.error(err);
+            setError("Unable to generate guidance.");
+        }
     };
 
     return (
@@ -72,7 +101,29 @@ function CareerGuidanceInner() {
                 <p className="text-text-secondary">Discover career opportunities, salary insights, skills roadmaps, and certifications based on your profile or queries.</p>
             </div>
 
-            {/* Search and Suggestion Section */}
+            {error ? (
+                <div className="pt-10">
+                    <FeaturePlaceholder 
+                        title="Guidance Error"
+                        description={error}
+                        icon={<AlertCircle className="w-8 h-8 text-red-500" />}
+                        isBeta={false}
+                        showResumeBuilderButton={false}
+                    />
+                </div>
+            ) : progress === 0 && resumeData.experience.length === 0 && !guide && !query ? (
+                <div className="pt-10">
+                    <FeaturePlaceholder 
+                        title="Complete Your Profile"
+                        description="Complete your profile or start building your resume to receive personalized career guidance."
+                        icon={<Compass className="w-8 h-8 text-primary" />}
+                        isBeta={false}
+                        showResumeBuilderButton={true}
+                    />
+                </div>
+            ) : (
+                <>
+                    {/* Search and Suggestion Section */}
             <Card className="p-6 mb-8 bg-gradient-to-br from-white to-gray-50/50 shadow-sm border-border">
                 <form onSubmit={handleSearch} className="flex flex-col sm:flex-row gap-3">
                     <div className="relative flex-1">
@@ -278,6 +329,8 @@ function CareerGuidanceInner() {
                         Enter your qualifications or target role above to generate a customized career progression roadmap.
                     </p>
                 </Card>
+            )}
+            </>
             )}
         </div>
     );

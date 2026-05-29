@@ -33,7 +33,14 @@ export default function ResumeScorePage() {
 
     // Memoize the score calculation to prevent expensive re-renders on every minor state change
     // This satisfies the requirement to avoid recomputing the dashboard unnecessarily.
-    const scoreResult = useMemo(() => calculateResumeScore(resumeData), [resumeData]);
+    const scoreResult = useMemo(() => {
+        try {
+            return calculateResumeScore(resumeData);
+        } catch (err) {
+            console.error('Score calculation error:', err);
+            return null;
+        }
+    }, [resumeData]);
 
     // If resume is completely empty, show empty state
     if (progress < 15 && resumeData.experience.length === 0) {
@@ -43,6 +50,20 @@ export default function ResumeScorePage() {
                     title="Not Enough Data"
                     description="Complete more of your resume sections (at least Personal Info and Experience) to generate an accurate ATS score."
                     icon={<ShieldAlert className="w-8 h-8 text-yellow-500" />}
+                    isBeta={false}
+                    showResumeBuilderButton={true}
+                />
+            </div>
+        );
+    }
+
+    if (!scoreResult) {
+        return (
+            <div className="h-full flex items-center justify-center pt-10">
+                <FeaturePlaceholder 
+                    title="Calculation Error"
+                    description="Unable to calculate score. Please verify your resume format and try again."
+                    icon={<AlertCircle className="w-8 h-8 text-red-500" />}
                     isBeta={false}
                     showResumeBuilderButton={true}
                 />

@@ -12,16 +12,18 @@ export function ResumeScore() {
     
     // Primary score from unified engine
     const scoreResult = useMemo(() => calculateResumeScore(resumeData), [resumeData]);
-    const score = scoreResult.overall;
     
     // Internal metadata for secondary display
     const completionPercentage = getOverallProgress();
 
-    let feedback = 'Complete your profile sections to improve your ATS score.';
-    let rating = 'Needs Improvement';
-    let colorClass = 'text-red-600 bg-red-50 border-red-100';
+    const isEmpty = completionPercentage < 15 && resumeData.experience.length === 0;
+    const score = isEmpty ? 0 : scoreResult.overall;
+
+    let feedback = isEmpty ? 'Complete your profile to generate a score.' : 'Complete your profile sections to improve your ATS score.';
+    let rating = isEmpty ? 'No Data' : 'Needs Improvement';
+    let colorClass = isEmpty ? 'text-gray-500 bg-gray-50 border-gray-200' : 'text-red-600 bg-red-50 border-red-100';
     let icon = AlertCircle;
-    let progressBarClass = 'bg-red-500';
+    let progressBarClass = isEmpty ? 'bg-gray-200' : 'bg-red-500';
 
     if (score >= 80) {
         feedback = 'Excellent! Your resume is highly detailed and ATS optimized.';
