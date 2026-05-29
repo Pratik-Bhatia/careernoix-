@@ -54,15 +54,15 @@ export function SuggestionCard({ suggestion }: SuggestionCardProps) {
     };
 
     return (
-        <Card className="p-5 flex flex-col md:flex-row gap-4 items-start hover:shadow-md transition-all border-l-4" style={{ borderLeftColor: 'var(--primary)' }}>
-            <div className="p-2 bg-gray-50 rounded-xl flex-shrink-0 border border-border">
+        <Card className="p-6 flex flex-col md:flex-row gap-5 items-start hover:shadow-md transition-shadow">
+            <div className="p-2.5 bg-surface-secondary rounded-xl flex-shrink-0 border border-border">
                 {getIcon()}
             </div>
             
             <div className="flex-1 space-y-2">
                 <div className="flex items-start justify-between gap-4">
                     <h3 className="font-bold text-text-primary text-base">{suggestion.title}</h3>
-                    <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-green-50 text-green-700 border border-green-100 whitespace-nowrap">
+                    <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-gray-100 text-gray-700 border border-gray-200 whitespace-nowrap">
                         {suggestion.impact}
                     </span>
                 </div>

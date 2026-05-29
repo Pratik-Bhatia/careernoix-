@@ -80,9 +80,9 @@ export function ProjectDetailsModal({ project, isOpen, onClose }: ProjectDetails
             <div className="relative bg-white w-full max-w-3xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
                 
                 {/* Header */}
-                <div className="flex items-center justify-between p-6 border-b border-border bg-gray-50/50">
+                <div className="flex items-center justify-between p-6 border-b border-border bg-white">
                     <div className="flex items-center gap-4">
-                        <div className="p-3 bg-primary-light/30 rounded-xl border border-primary/20">
+                        <div className="p-3 bg-surface-secondary rounded-xl border border-border">
                             <FolderPlus className="text-primary" size={24} />
                         </div>
                         <div>
@@ -137,11 +137,11 @@ export function ProjectDetailsModal({ project, isOpen, onClose }: ProjectDetails
                             <p className="text-sm text-gray-600 leading-relaxed">{project.description}</p>
                         </div>
                         
-                        <div className="p-4 bg-primary-light/20 rounded-xl border border-primary/20 flex gap-3">
+                        <div className="p-5 bg-surface-secondary rounded-xl border border-border flex gap-3">
                             <TrendingUp className="text-primary flex-shrink-0 mt-0.5" size={20} />
                             <div>
-                                <h4 className="text-sm font-bold text-primary-dark mb-1">How This Improves Your Resume</h4>
-                                <p className="text-sm text-primary-dark/80 leading-relaxed">{project.recruiterValue}</p>
+                                <h4 className="text-sm font-bold text-text-primary mb-1">How This Improves Your Resume</h4>
+                                <p className="text-sm text-text-secondary leading-relaxed">{project.recruiterValue}</p>
                             </div>
                         </div>
                     </div>

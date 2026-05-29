@@ -55,10 +55,10 @@ export function ProjectRecommendationCard({ project, onViewDetails }: ProjectRec
     }
 
     return (
-        <Card className="p-6 flex flex-col gap-4 hover:shadow-md transition-all border-l-4" style={{ borderLeftColor: 'var(--primary)' }}>
+        <Card className="p-6 flex flex-col gap-4 hover:shadow-md transition-shadow">
             <div className="flex items-start justify-between gap-4">
                 <div className="flex gap-4 flex-1">
-                    <div className="p-3 bg-gray-50 rounded-xl flex-shrink-0 border border-border mt-1">
+                    <div className="p-3 bg-surface-secondary rounded-xl flex-shrink-0 border border-border mt-1">
                         <FolderPlus className="text-primary" size={24} />
                     </div>
                     <div>

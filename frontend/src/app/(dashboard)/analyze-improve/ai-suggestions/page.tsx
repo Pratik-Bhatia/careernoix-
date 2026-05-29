@@ -149,10 +149,10 @@ export default function AISuggestionsPage() {
                                 key={tab}
                                 onClick={() => setActiveTab(tab)}
                                 className={cn(
-                                    "px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all border",
+                                    "px-4 py-2 rounded-lg text-sm font-semibold whitespace-nowrap transition-all border",
                                     activeTab === tab 
                                         ? "bg-text-primary text-white border-text-primary shadow-sm" 
-                                        : "bg-white text-text-secondary border-border hover:bg-gray-50 hover:text-text-primary"
+                                        : "bg-white text-text-secondary border-border hover:bg-surface-secondary hover:text-text-primary"
                                 )}
                             >
                                 {tab}
@@ -181,9 +181,9 @@ export default function AISuggestionsPage() {
                                 ))}
                             </div>
                         ) : (
-                            <Card className="p-12 flex flex-col items-center justify-center text-center border-dashed">
-                                <div className="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mb-4">
-                                    <Sparkles className="w-8 h-8 text-blue-500" />
+                            <Card className="p-12 flex flex-col items-center justify-center text-center shadow-none border-border">
+                                <div className="w-16 h-16 bg-gray-50 border border-border rounded-full flex items-center justify-center mb-5">
+                                    <Sparkles className="w-8 h-8 text-text-secondary" />
                                 </div>
                                 <h3 className="text-xl font-bold text-text-primary mb-2">No projects found</h3>
                                 <p className="text-text-secondary max-w-sm">

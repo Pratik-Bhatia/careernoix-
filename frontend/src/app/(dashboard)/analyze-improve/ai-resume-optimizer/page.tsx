@@ -111,8 +111,8 @@ export default function AIResumeOptimizerPage() {
             <div className="mb-8 print:hidden">
                 <div className="flex items-center gap-3 mb-1">
                     <h1 className="text-3xl font-bold text-text-primary tracking-tight">AI Resume Optimizer</h1>
-                    <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-purple-100 text-purple-700 border border-purple-200">
-                        V1
+                    <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-gray-100 text-gray-600 border border-border">
+                        Beta
                     </span>
                 </div>
                 <p className="text-text-secondary">Compare your resume against a target job description to identify missing keywords and boost ATS compatibility.</p>
@@ -123,10 +123,10 @@ export default function AIResumeOptimizerPage() {
                 {/* ─── LEFT PANEL: Input (3 cols) ─── */}
                 <div className="lg:col-span-3 space-y-6 print:hidden">
                     {/* Active Resume Indicator */}
-                    <Card className="p-4 border-border bg-gray-50/50">
-                        <div className="flex items-center justify-between mb-3">
-                            <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">Active Resume</span>
-                            <span className="flex items-center text-[10px] text-green-600 bg-green-50 px-2 py-0.5 rounded border border-green-200">
+                    <Card className="p-5 border-border shadow-none bg-surface-secondary">
+                        <div className="flex items-center justify-between mb-4">
+                            <span className="text-xs font-bold text-text-secondary uppercase tracking-wider">Active Resume</span>
+                            <span className="flex items-center text-[10px] text-green-700 bg-green-50 px-2 py-0.5 rounded border border-green-200 font-semibold">
                                 <Check size={10} className="mr-1" /> Synced
                             </span>
                         </div>
@@ -145,11 +145,11 @@ export default function AIResumeOptimizerPage() {
                     </Card>
 
                     {/* Target Job Role Input */}
-                    <Card className="p-4 border-border shadow-sm flex flex-col gap-2">
-                        <label className="text-xs font-bold text-gray-700 uppercase tracking-wider">Target Job Role</label>
+                    <Card className="p-5 border-border shadow-none flex flex-col gap-2">
+                        <label className="text-xs font-bold text-text-secondary uppercase tracking-wider">Target Job Role</label>
                         <input
                             type="text"
-                            className="w-full p-2.5 text-sm border border-border rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all bg-gray-50/50"
+                            className="w-full p-2.5 text-sm border border-border rounded-lg focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all"
                             placeholder="e.g., Frontend Developer, Data Analyst"
                             value={targetRole}
                             onChange={(e) => setTargetRole(e.target.value)}
@@ -157,15 +157,15 @@ export default function AIResumeOptimizerPage() {
                     </Card>
 
                     {/* JD Input */}
-                    <Card className="p-4 border-border shadow-sm flex flex-col h-[350px]">
-                        <div className="flex items-center justify-between mb-2">
-                            <label className="text-xs font-bold text-gray-700 uppercase tracking-wider">Job Description</label>
-                            <span className={cn("text-[10px]", jdText.length > 15000 ? "text-red-500" : "text-gray-400")}>
+                    <Card className="p-5 border-border shadow-none flex flex-col h-[350px]">
+                        <div className="flex items-center justify-between mb-3">
+                            <label className="text-xs font-bold text-text-secondary uppercase tracking-wider">Job Description</label>
+                            <span className={cn("text-[10px] font-medium", jdText.length > 15000 ? "text-red-500" : "text-gray-400")}>
                                 {jdText.length} / 15000
                             </span>
                         </div>
                         <textarea
-                            className="flex-1 w-full p-3 text-sm border border-border rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all resize-none custom-scrollbar bg-gray-50/50"
+                            className="flex-1 w-full p-3 text-sm border border-border rounded-lg focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all resize-none custom-scrollbar"
                             placeholder="Paste the target job description here to extract keywords..."
                             value={jdText}
                             onChange={(e) => setJdText(e.target.value)}
@@ -246,9 +246,9 @@ export default function AIResumeOptimizerPage() {
                             )}
                         </div>
                     ) : (
-                        <Card className="p-10 flex flex-col items-center justify-center text-center border-dashed bg-gray-50/50">
-                            <div className="w-16 h-16 bg-purple-50 rounded-full flex items-center justify-center mb-4">
-                                <Wand2 className="w-8 h-8 text-purple-500" />
+                        <Card className="p-12 flex flex-col items-center justify-center text-center shadow-none border-border">
+                            <div className="w-16 h-16 bg-gray-50 border border-border rounded-full flex items-center justify-center mb-5">
+                                <Wand2 className="w-8 h-8 text-text-secondary" />
                             </div>
                             <h3 className="text-lg font-bold text-text-primary mb-2">Ready to Optimize</h3>
                             <p className="text-sm text-text-secondary max-w-xs">
@@ -322,10 +322,10 @@ export default function AIResumeOptimizerPage() {
                                 disabled={!result}
                                 className={cn(
                                     "px-3 py-1.5 text-xs font-medium rounded-md transition-all flex items-center gap-1.5",
-                                    previewTab === 'optimized' ? "bg-purple-100 text-purple-800 shadow-sm border border-purple-200" : "text-gray-500 hover:text-gray-700 disabled:opacity-50"
+                                    previewTab === 'optimized' ? "bg-white text-gray-900 shadow-sm" : "text-gray-500 hover:text-gray-700 disabled:opacity-50"
                                 )}
                             >
-                                <Wand2 size={12} /> Optimized {result && !hasApplied && <span className="w-2 h-2 bg-purple-500 rounded-full ml-1" />}
+                                <Wand2 size={12} /> Optimized {result && !hasApplied && <span className="w-2 h-2 bg-primary rounded-full ml-1" />}
                             </button>
                         </div>
                         <Button variant="outline" size="sm" className="gap-2 text-xs print:hidden" onClick={handleDownloadPDF}>
