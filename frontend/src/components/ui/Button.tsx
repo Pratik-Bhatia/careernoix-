@@ -20,10 +20,10 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         const baseStyles = "inline-flex items-center justify-center rounded-xl font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-light disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98]";
 
         const variants = {
-            primary: "bg-primary text-white hover:bg-primary-hover shadow-lg shadow-primary/20 hover:shadow-xl",
-            secondary: "bg-surface text-text-primary border border-border hover:bg-gray-50",
-            outline: "border-2 border-primary text-primary hover:bg-primary-light/10",
-            ghost: "text-text-secondary hover:text-primary hover:bg-primary-light/10",
+            primary: "bg-primary text-white hover:bg-primary-hover shadow-card hover:shadow-card-hover",
+            secondary: "bg-surface-secondary text-text-primary border border-border hover:bg-border/50 shadow-sm",
+            outline: "border border-border bg-transparent text-text-primary hover:bg-surface-secondary",
+            ghost: "text-text-secondary hover:text-primary hover:bg-surface-secondary",
         };
 
         const sizes = {

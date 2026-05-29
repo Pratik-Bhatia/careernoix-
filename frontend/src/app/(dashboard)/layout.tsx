@@ -87,8 +87,8 @@ export default function DashboardLayout({
                 {/* Header */}
                 <div className="h-20 flex-shrink-0 flex items-center px-6 border-b border-border/50">
                     <Link href="/dashboard" className="flex items-center gap-2">
-                        <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center shadow-lg shadow-primary/20">
-                            <span className="text-white font-bold">S</span>
+                        <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center shadow-sm">
+                            <span className="text-white font-medium">S</span>
                         </div>
                         <span className="text-xl font-bold text-text-primary tracking-tight">SmartMatch</span>
                     </Link>
@@ -112,14 +112,14 @@ export default function DashboardLayout({
                                 href={item.href}
                                 onClick={() => setSidebarOpen(false)}
                                 className={cn(
-                                    "flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 group relative overflow-hidden flex-shrink-0",
+                                    "flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 group relative overflow-hidden flex-shrink-0",
                                     isActive
-                                        ? 'bg-primary/10 text-primary'
-                                        : 'text-text-secondary hover:bg-gray-50 hover:text-text-primary'
+                                        ? 'bg-surface-secondary text-text-primary'
+                                        : 'text-text-secondary hover:bg-surface-secondary/50 hover:text-text-primary'
                                 )}
                             >
-                                {isActive && <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary rounded-full transition-all" />}
-                                <Icon size={20} className={cn("mr-3 transition-colors", isActive ? 'text-primary' : 'text-text-placeholder group-hover:text-text-secondary')} />
+                                {isActive && <div className="absolute left-0 top-1/2 -translate-y-1/2 h-4 w-1 bg-primary rounded-full transition-all" />}
+                                <Icon size={18} className={cn("mr-3 transition-colors", isActive ? 'text-primary' : 'text-text-muted group-hover:text-text-secondary')} />
                                 {item.name}
                             </Link>
                         );
@@ -130,22 +130,22 @@ export default function DashboardLayout({
                         <button
                             onClick={() => setResumeBuilderExpanded(!isResumeBuilderExpanded)}
                             className={cn(
-                                "w-full flex items-center justify-between px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 group relative overflow-hidden cursor-pointer",
+                                "w-full flex items-center justify-between px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 group relative overflow-hidden cursor-pointer",
                                 pathname.startsWith('/resume-builder')
-                                    ? 'bg-primary/10 text-primary font-semibold'
-                                    : 'text-text-secondary hover:bg-gray-50 hover:text-text-primary'
+                                    ? 'bg-surface-secondary text-text-primary'
+                                    : 'text-text-secondary hover:bg-surface-secondary/50 hover:text-text-primary'
                             )}
                         >
-                            {pathname.startsWith('/resume-builder') && <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary rounded-full" />}
+                            {pathname.startsWith('/resume-builder') && <div className="absolute left-0 top-1/2 -translate-y-1/2 h-4 w-1 bg-primary rounded-full" />}
                             <div className="flex items-center">
-                                <Folder size={20} className={cn("mr-3 transition-colors", pathname.startsWith('/resume-builder') ? 'text-primary' : 'text-text-placeholder group-hover:text-text-secondary')} />
+                                <Folder size={18} className={cn("mr-3 transition-colors", pathname.startsWith('/resume-builder') ? 'text-primary' : 'text-text-muted group-hover:text-text-secondary')} />
                                 Resume Builder
                             </div>
-                            {isResumeBuilderExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                            {isResumeBuilderExpanded ? <ChevronUp size={14} className="text-text-muted" /> : <ChevronDown size={14} className="text-text-muted" />}
                         </button>
                         
                         {isResumeBuilderExpanded && (
-                            <div className="mt-1 ml-4 pl-3 border-l border-border/80 space-y-1">
+                            <div className="mt-1 ml-3 pl-4 border-l border-border space-y-1 py-1">
                                 {resumeBuilderChildren.map((child) => {
                                     const isChildActive = pathname === child.href;
                                     return (
@@ -154,10 +154,10 @@ export default function DashboardLayout({
                                             href={child.href}
                                             onClick={() => setSidebarOpen(false)}
                                             className={cn(
-                                                "flex items-center px-4 py-2 text-sm rounded-lg transition-colors",
+                                                "flex items-center px-3 py-1.5 text-sm rounded-md transition-colors",
                                                 isChildActive
-                                                    ? 'text-primary font-semibold bg-primary/5'
-                                                    : 'text-text-secondary hover:text-text-primary hover:bg-gray-50'
+                                                    ? 'text-text-primary font-medium bg-surface-secondary/50'
+                                                    : 'text-text-secondary hover:text-text-primary hover:bg-surface-secondary/30'
                                             )}
                                         >
                                             {child.name}
@@ -173,22 +173,22 @@ export default function DashboardLayout({
                         <button
                             onClick={() => setAnalyzeExpanded(!isAnalyzeExpanded)}
                             className={cn(
-                                "w-full flex items-center justify-between px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 group relative overflow-hidden cursor-pointer",
+                                "w-full flex items-center justify-between px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 group relative overflow-hidden cursor-pointer",
                                 pathname.startsWith('/analyze-improve')
-                                    ? 'bg-primary/10 text-primary font-semibold'
-                                    : 'text-text-secondary hover:bg-gray-50 hover:text-text-primary'
+                                    ? 'bg-surface-secondary text-text-primary'
+                                    : 'text-text-secondary hover:bg-surface-secondary/50 hover:text-text-primary'
                             )}
                         >
-                            {pathname.startsWith('/analyze-improve') && <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary rounded-full" />}
+                            {pathname.startsWith('/analyze-improve') && <div className="absolute left-0 top-1/2 -translate-y-1/2 h-4 w-1 bg-primary rounded-full" />}
                             <div className="flex items-center">
-                                <Sparkles size={20} className={cn("mr-3 transition-colors", pathname.startsWith('/analyze-improve') ? 'text-primary' : 'text-text-placeholder group-hover:text-text-secondary')} />
+                                <Sparkles size={18} className={cn("mr-3 transition-colors", pathname.startsWith('/analyze-improve') ? 'text-primary' : 'text-text-muted group-hover:text-text-secondary')} />
                                 Analyze & Improve
                             </div>
-                            {isAnalyzeExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                            {isAnalyzeExpanded ? <ChevronUp size={14} className="text-text-muted" /> : <ChevronDown size={14} className="text-text-muted" />}
                         </button>
                         
                         {isAnalyzeExpanded && (
-                            <div className="mt-1 ml-4 pl-3 border-l border-border/80 space-y-1">
+                            <div className="mt-1 ml-3 pl-4 border-l border-border space-y-1 py-1">
                                 {analyzeImproveChildren.map((child) => {
                                     const isChildActive = pathname === child.href;
                                     return (
@@ -197,10 +197,10 @@ export default function DashboardLayout({
                                             href={child.href}
                                             onClick={() => setSidebarOpen(false)}
                                             className={cn(
-                                                "flex items-center px-4 py-2 text-sm rounded-lg transition-colors",
+                                                "flex items-center px-3 py-1.5 text-sm rounded-md transition-colors",
                                                 isChildActive
-                                                    ? 'text-primary font-semibold bg-primary/5'
-                                                    : 'text-text-secondary hover:text-text-primary hover:bg-gray-50'
+                                                    ? 'text-text-primary font-medium bg-surface-secondary/50'
+                                                    : 'text-text-secondary hover:text-text-primary hover:bg-surface-secondary/30'
                                             )}
                                         >
                                             {child.name}
@@ -236,16 +236,16 @@ export default function DashboardLayout({
                 </nav>
 
                 {/* User Section */}
-                <div className="p-4 m-4 bg-gray-50 rounded-2xl border border-border/50 flex-shrink-0">
-                    <div className="flex items-center mb-4">
-                        <div className="w-10 h-10 rounded-full bg-surface border border-border flex items-center justify-center text-text-secondary shadow-sm">
-                            <User size={20} />
+                <div className="p-4 border-t border-border flex-shrink-0 bg-surface">
+                    <div className="flex items-center mb-3 px-2">
+                        <div className="w-8 h-8 rounded-full bg-surface-secondary border border-border flex items-center justify-center text-text-secondary">
+                            <User size={16} />
                         </div>
                         <div className="ml-3 overflow-hidden">
-                            <p className="text-sm font-bold text-text-primary truncate">
+                            <p className="text-sm font-medium text-text-primary truncate">
                                 {user?.full_name || 'User'}
                             </p>
-                            <p className="text-xs text-text-secondary truncate">
+                            <p className="text-xs text-text-muted truncate">
                                 {user?.email}
                             </p>
                         </div>

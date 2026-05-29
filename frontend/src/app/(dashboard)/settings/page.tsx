@@ -131,23 +131,23 @@ export default function SettingsPage() {
                 </div>
             )}
 
-            <header className="mb-6">
+            <header className="mb-8">
                 <div className="flex items-center gap-2 mb-2">
-                    <SettingsIcon className="text-primary w-6 h-6" />
-                    <h1 className="text-3xl font-bold text-gray-900">Settings</h1>
+                    <SettingsIcon className="text-text-primary w-6 h-6" />
+                    <h1 className="text-3xl font-semibold text-text-primary tracking-tight">Settings</h1>
                 </div>
-                <p className="text-text-secondary text-lg">Manage your account preferences and profile details.</p>
+                <p className="text-text-secondary text-sm">Manage your account preferences and profile details.</p>
             </header>
 
             {/* Section 1: Account Information */}
-            <Card className="p-6">
-                <h2 className="text-xl font-bold text-gray-900 mb-4 border-b pb-2">Account Information</h2>
+            <Card className="p-8">
+                <h2 className="text-lg font-semibold text-text-primary mb-6">Account Information</h2>
                 <div className="space-y-4 max-w-2xl">
                     <Input
                         label="Email Address"
                         value={user?.email || ''}
                         disabled
-                        className="bg-gray-50 text-gray-500 cursor-not-allowed"
+                        className="bg-surface-secondary text-text-muted cursor-not-allowed border-transparent shadow-none"
                     />
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <Input
@@ -174,8 +174,8 @@ export default function SettingsPage() {
             </Card>
 
             {/* Section 2: Profile Preferences */}
-            <Card className="p-6">
-                <h2 className="text-xl font-bold text-gray-900 mb-4 border-b pb-2">Profile Preferences</h2>
+            <Card className="p-8">
+                <h2 className="text-lg font-semibold text-text-primary mb-6">Profile Preferences</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl">
                     <div className="space-y-2">
                         <label className="text-sm font-semibold text-text-secondary">Preferred Job Role</label>
@@ -237,8 +237,8 @@ export default function SettingsPage() {
             </Card>
 
             {/* Section 3: Resume Settings */}
-            <Card className="p-6">
-                <h2 className="text-xl font-bold text-gray-900 mb-4 border-b pb-2">Resume Settings</h2>
+            <Card className="p-8">
+                <h2 className="text-lg font-semibold text-text-primary mb-6">Resume Settings</h2>
                 <div className="space-y-6 max-w-2xl">
                     <div className="flex items-center justify-between p-4 bg-surface rounded-xl border border-border">
                         <div>
@@ -247,7 +247,7 @@ export default function SettingsPage() {
                         </div>
                         <label className="relative inline-flex items-center cursor-pointer">
                             <input type="checkbox" className="sr-only peer" checked={settings.auto_save_enabled} onChange={(e) => handlePreferenceChange('auto_save_enabled', e.target.checked)} />
-                            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                            <div className="w-11 h-6 bg-surface-secondary border border-border peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-border after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
                         </label>
                     </div>
 
@@ -258,7 +258,7 @@ export default function SettingsPage() {
                         </div>
                         <label className="relative inline-flex items-center cursor-pointer">
                             <input type="checkbox" className="sr-only peer" checked={settings.ai_suggestions_enabled} onChange={(e) => handlePreferenceChange('ai_suggestions_enabled', e.target.checked)} />
-                            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                            <div className="w-11 h-6 bg-surface-secondary border border-border peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-border after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
                         </label>
                     </div>
 
@@ -269,7 +269,7 @@ export default function SettingsPage() {
                         </div>
                         <label className="relative inline-flex items-center cursor-pointer">
                             <input type="checkbox" className="sr-only peer" checked={settings.ats_optimization_enabled} onChange={(e) => handlePreferenceChange('ats_optimization_enabled', e.target.checked)} />
-                            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                            <div className="w-11 h-6 bg-surface-secondary border border-border peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-border after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
                         </label>
                     </div>
 
@@ -289,8 +289,8 @@ export default function SettingsPage() {
             </Card>
 
             {/* Section 4: Security Settings */}
-            <Card className="p-6">
-                <h2 className="text-xl font-bold text-gray-900 mb-4 border-b pb-2">Security Settings</h2>
+            <Card className="p-8">
+                <h2 className="text-lg font-semibold text-text-primary mb-6">Security Settings</h2>
                 <form onSubmit={handlePasswordSubmit} className="space-y-4 max-w-2xl">
                     <Input
                         type="password"
@@ -322,8 +322,8 @@ export default function SettingsPage() {
             </Card>
 
             {/* Section 5: Account Actions */}
-            <Card className="p-6 border-error/20 bg-error/5">
-                <h2 className="text-xl font-bold text-error mb-4 border-b border-error/10 pb-2">Account Actions</h2>
+            <Card className="p-8 border-error/20 bg-error/5 shadow-none">
+                <h2 className="text-lg font-semibold text-error mb-2">Account Actions</h2>
                 <div className="space-y-4 max-w-2xl">
                     <p className="text-sm text-text-secondary">Manage your session or permanently deactivate your account.</p>
                     <div className="flex gap-4">

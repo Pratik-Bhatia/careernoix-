@@ -28,10 +28,10 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
                     <input
                         id={id}
                         className={cn(
-                            "flex h-12 w-full rounded-xl border border-border bg-surface px-4 py-2 text-text-primary placeholder:text-text-placeholder transition-all outline-none",
-                            "focus:border-primary focus:ring-4 focus:ring-primary-light",
-                            "group-hover:border-primary/50",
-                            error && "border-error focus:border-error focus:ring-error/10",
+                            "flex h-11 w-full rounded-xl border border-border bg-surface px-4 py-2 text-text-primary placeholder:text-text-muted transition-all outline-none",
+                            "focus:border-primary focus:ring-1 focus:ring-primary shadow-sm",
+                            "hover:border-primary/40",
+                            error && "border-error focus:border-error focus:ring-error",
                             endIcon && "pr-12", // Add padding if icon exists
                             className
                         )}
