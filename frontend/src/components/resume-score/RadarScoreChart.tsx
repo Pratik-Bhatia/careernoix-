@@ -55,9 +55,9 @@ export function RadarScoreChart({ categories }: RadarScoreChartProps) {
                     <Radar
                         name="Your Resume"
                         dataKey="A"
-                        stroke="#2563eb"
-                        fill="#3b82f6"
-                        fillOpacity={0.2}
+                        stroke="#111111"
+                        fill="#111111"
+                        fillOpacity={0.1}
                     />
                 </RadarChart>
             </ResponsiveContainer>

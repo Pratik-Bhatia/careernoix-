@@ -41,10 +41,10 @@ export function PreviewPanel({ children, className, baseWidth = 794 }: PreviewPa
         >
             <div 
                 ref={containerRef} 
-                className="w-full relative"
+                className="w-full relative mx-auto"
                 style={{ 
-                    // Set a minimum height to roughly match an A4 page initially
-                    minHeight: `${baseWidth * 1.414}px` 
+                    // Set an exact height to match an A4 page initially, maintaining aspect ratio
+                    height: `${containerRef.current ? containerRef.current.clientWidth * 1.4142 : baseWidth * 1.4142}px` 
                 }}
             >
                 {/* The scaling wrapper */}
@@ -52,13 +52,14 @@ export function PreviewPanel({ children, className, baseWidth = 794 }: PreviewPa
                     className="absolute top-0 left-0 origin-top-left transition-transform duration-200 ease-out"
                     style={{ 
                         width: `${baseWidth}px`, 
+                        height: `${baseWidth * 1.4142}px`,
                         transform: `scale(${scale})` 
                     }}
                 >
                     {/* The Paper Document */}
                     <div 
                         id="resume-print-area" 
-                        className="w-full min-h-[1122px] bg-white shadow-md p-10 antialiased subpixel-antialiased print:p-0 print:shadow-none print:min-h-0 print:w-full"
+                        className="w-full h-full bg-white shadow-lg p-10 antialiased subpixel-antialiased print:p-0 print:shadow-none print:w-full overflow-hidden"
                     >
                         {children}
                     </div>

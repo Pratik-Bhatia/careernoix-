@@ -86,7 +86,7 @@ export default function ResumeScorePage() {
                 <div className="lg:col-span-8 space-y-6">
                     
                     {/* Hero Card */}
-                    <Card className="p-6 md:p-8 flex flex-col md:flex-row items-center gap-8 bg-gradient-to-br from-white to-gray-50/50">
+                    <Card className="p-8 md:p-10 flex flex-col md:flex-row items-center gap-10">
                         <div className="flex-shrink-0">
                             <CircularScore score={overall} size={140} strokeWidth={12} label="Overall Score" />
                         </div>
@@ -139,7 +139,7 @@ export default function ResumeScorePage() {
                         </Card>
 
                         {/* Radar Chart */}
-                        <Card className="p-6 flex flex-col">
+                        <Card className="p-8 flex flex-col">
                             <h3 className="text-lg font-bold text-text-primary mb-2">Category Balance</h3>
                             <p className="text-xs text-text-secondary mb-4">Visualize your resume's strengths and weaknesses.</p>
                             <div className="flex-1 flex items-center justify-center">
@@ -156,7 +156,7 @@ export default function ResumeScorePage() {
                         </h3>
                         <div className="space-y-3">
                             {suggestions.map((suggestion, idx) => (
-                                <Card key={idx} className="p-4 hover:shadow-md transition-shadow group border-l-4 border-l-primary">
+                                <Card key={idx} className="p-5 hover:border-primary/30 transition-colors group">
                                     <div className="flex items-start justify-between gap-4">
                                         <div className="flex-1">
                                             <h4 className="text-base font-bold text-text-primary mb-1">{suggestion.title}</h4>
@@ -194,12 +194,12 @@ export default function ResumeScorePage() {
 
                     {/* Benchmark Comparison */}
                     <div className="grid grid-cols-2 gap-4">
-                        <Card className="p-4 text-center">
-                            <span className="block text-xs text-text-secondary font-medium uppercase tracking-wider mb-1">Industry Avg</span>
+                        <Card className="p-6 text-center">
+                            <span className="block text-[10px] font-bold text-text-secondary uppercase tracking-wider mb-2">Industry Avg</span>
                             <span className="text-2xl font-bold text-gray-700">58</span>
                         </Card>
-                        <Card className="p-4 text-center">
-                            <span className="block text-xs text-text-secondary font-medium uppercase tracking-wider mb-1">Top Performers</span>
+                        <Card className="p-6 text-center">
+                            <span className="block text-[10px] font-bold text-text-secondary uppercase tracking-wider mb-2">Top Performers</span>
                             <span className="text-2xl font-bold text-green-600">85</span>
                         </Card>
                     </div>
@@ -213,8 +213,8 @@ export default function ResumeScorePage() {
                         <ScoreHistoryChart currentScore={overall} />
                     </Card>
 
-                    {/* AI Feedback Promo (Static for V1) */}
-                    <Card className="p-5 bg-primary/5 border border-primary/20">
+                    {/* AI Feedback Promo */}
+                    <Card className="p-6 border border-border shadow-none bg-surface-secondary">
                         <div className="flex items-start gap-3">
                             <div className="p-2 bg-primary/10 rounded-lg">
                                 <Sparkles className="w-5 h-5 text-primary" />
