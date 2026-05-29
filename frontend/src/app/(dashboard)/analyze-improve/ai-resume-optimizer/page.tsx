@@ -30,7 +30,7 @@ import { cn } from '@/lib/utils';
 import Link from 'next/link';
 
 export default function AIResumeOptimizerPage() {
-    const { resumeData, hydrateFromBackend, updatePersonalInfo } = useResumeStore();
+    const { resumeData, hydrateFromBackend, updatePersonalInfo, getOverallProgress } = useResumeStore();
     
     // Inputs
     const [targetRole, setTargetRole] = useState(resumeData.personalInfo.jobTitle || '');

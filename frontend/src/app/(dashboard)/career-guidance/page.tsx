@@ -17,7 +17,8 @@ import {
     ListChecks, 
     ChevronRight,
     Map,
-    HelpCircle
+    HelpCircle,
+    AlertCircle
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
